@@ -455,6 +455,32 @@ function SMODS.INIT.FearJokers()
     SMODS.Joker({
         key = 'tma_Boneturner', atlas = 'tma_joker', pos = {x = 6, y = 0}, rarity = 3, cost = 8, blueprint_compat = false
     })
+
+    -- Hunter
+    SMODS.Joker({
+        key = 'tma_Hunter', atlas = 'tma_joker', pos = {x = 3, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
+        config = {
+            extra = {
+                money = 3
+            }
+        },
+        loc_vars = function(self,info_queue,card)
+            return {
+                vars = {card.ability.extra.money}
+            }
+        end,
+        calculate = function(self,card,context)
+            if context.individual and context.cardarea == G.play and context.other_card:get_seal() then
+                print("test!")
+                G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money
+                G.E_MANAGER:add_event(Event({func = (function() G.GAME.dollar_buffer = 0; return true end)}))
+                return {
+                    dollars = card.ability.extra.money,
+                    card = card
+                }
+            end
+        end
+    })
     
     -- Lonely Joker
     SMODS.Joker({
@@ -495,32 +521,15 @@ function SMODS.INIT.FearJokers()
 
     -- Nikola Orsinov
     SMODS.Joker({
-        key = 'tma_Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = true, 
-        config = {
-            extra = {
-                bonus_mult = 2
-            }
-        },
-        loc_vars = function(self,info_queue,card)
-            return {
-                vars = {card.ability.extra.bonus_mult}
-            }
-        end,
+        key = 'tma_Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = true,
         calculate = function(self,card,context)
-            if not context.end_of_round and context.individual and context.cardarea == G.hand and context.other_card.ability.name == "Stone Card" then
-                if context.other_card.debuff then
-                    return {
-                        message = localize('k_debuffed'),
-                        colour = G.C.RED,
-                        card = card,
-                    }
-                else
-                    return {
-                        card = card,
-                        chips = card.ability.extra.bonus_chips
-                    }
-                end
-            end
+            if context.retrigger_joker_check and not context.retrigger_joker then
+				return {
+					message = localize('k_again_ex'),
+					repetitions = self.config.num_retriggers,
+					card = card
+				}
+		    end
         end
     })
 
@@ -551,6 +560,59 @@ function SMODS.INIT.FearJokers()
                         chips = card.ability.extra.bonus_chips
                     }
                 end
+            end
+        end
+    })
+
+    -- Mr Spider
+    SMODS.Joker({
+        key = 'tma_MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, 
+        config = {
+            x_mult = 1,
+            extra = {
+                bonus_mult = 0.5,
+                rank = 'Jack'
+            }
+        },
+        loc_vars = function(self,info_queue,card)
+            return {
+                vars = {card.ability.extra.bonus_mult, card.ability.x_mult, localize(card.ability.extra.rank, 'ranks')}
+            }
+        end,
+        set_ability = function(self, card)
+            if G.playing_cards and #G.playing_cards > 0 then
+                local ranks_in_deck = {}
+                for _, v in ipairs(G.playing_cards) do
+                    table.insert(ranks_in_deck, v)
+                end
+                card.ability.extra.rank = pseudorandom_element(ranks_in_deck, pseudoseed('mrspider')).base.value
+            end
+        end,
+        calculate = function(self,card,context)
+            if context.end_of_round then
+                local ranks_in_deck = {}
+                for _, v in ipairs(G.playing_cards) do
+                    table.insert(ranks_in_deck, v)
+                end
+                card.ability.extra.rank = pseudorandom_element(ranks_in_deck, pseudoseed('mrspider')).base.value
+            end
+            if SMODS.end_calculate_context(context) and card.ability.x_mult > 1 then
+                return {
+                    message = localize{type='variable',key='a_xmult',vars={card.ability.x_mult}},
+                    Xmult_mod = card.ability.x_mult
+                }
+            end
+            if context.destroying_card and not context.blueprint and context.full_hand[1].base.value == card.ability.extra.rank and #context.full_hand == 1 then
+                local playcard = context.full_hand[1]
+                card.ability.x_mult = card.ability.x_mult + card.ability.extra.bonus_mult
+                card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.x_mult}}, colour = G.C.RED, card = card})
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					func = function()
+						playcard:start_dissolve()
+					return true
+				end}))
+                return true
             end
         end
     })

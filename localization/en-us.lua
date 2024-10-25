@@ -117,8 +117,8 @@ return {
 			["j_tma_Lonely"] = {
 				["name"] = "Lonely Joker",
 				["text"] = {
-					"This Joker gains {C:mult}+#1#{} Mult if",
-					"played hand is {C:attention}#3#{}.",
+					"This Joker gains {C:mult}+#1#{} Mult",
+					"if played hand is {C:attention}#3#{}.",
 					"{C:inactive}(Currently {C:mult}+#2#{C:inactive}.)"
 				},
 			},
@@ -128,6 +128,28 @@ return {
 					"{C:chips,E:1}It is not what it is."
 				},
 			},
+			["j_tma_Nikola"] = {
+				["name"] = "Nikola",
+				["text"] = {
+					"Retriggers all {C:attention}Jokers{}"
+				},
+			},
+			["j_tma_Hunter"] = {
+				["name"] = "Hunter",
+				["text"] = {
+					"Played {C:attention}Sealed{} cards",
+					"Give {C:money}$#1#{} when scored"
+				}
+			},
+			["j_tma_MrSpider"] = {
+				["name"] = "Mr. Spider",
+				["text"] = {
+					"If hand is a single {C:attention}#3#{},",
+					"destroy it and gain {C:white,X:mult}X#1#{} Mult.",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult.)",
+					"{C:inactive}(Rank changes every round.)",				
+				}
+			}
 		},
 	},
 }
