@@ -66,7 +66,7 @@ return {
 				},
 			},
 			["j_tma_BlindSun"] = {
-				["name"] = "Dark Sun",
+				["name"] = "Eclipse",
 				["text"] = {
 					"{C:green}#1# in #2#{} cards are",
 					"drawn face down.",
