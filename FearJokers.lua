@@ -518,7 +518,7 @@ function SMODS.INIT.FearJokers()
             }
         end,
         calculate = function(self,card,context)
-            if context.before and not context.blueprint and next(context.poker_hands['High Card']) then
+            if context.before and not context.blueprint and #context.full_hand == 1 then
                 card.ability.mult_mod = card.ability.mult_mod + card.ability.extra.mult_bonus
                 return {
                     message = localize('k_upgrade_ex'),
