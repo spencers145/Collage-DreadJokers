@@ -11,9 +11,8 @@ return {
 			["c_tma_the_rot"] = {
 				["name"] = "The Rot",
 				["text"] = {
-					"Enhances {C:attention}1{} selected",
-					"card into a",
-					"{C:attention}Rotting Card"
+					"Destroys {C:attention}1{}",
+					"selected card."
 				},
 			}
 		},
@@ -148,6 +147,22 @@ return {
 					"destroy it and gain {C:white,X:mult}X#1#{} Mult.",
 					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult.)",
 					"{C:inactive}(Rank changes every round.)",				
+				}
+			},
+			["j_tma_Extinction"] = {
+				["name"] = "The Extinction",
+				["text"] = {
+					"{X:mult,C:white}X#1#{} Mult if",
+					"your full deck has less",
+					"than {C:attention}#2#{} cards."
+				}
+			},
+			["j_tma_Piper"] = {
+				["name"] = "Pied Piper",
+				["text"] = {
+					"{C:attention}+#1#{} hand size.",
+					"Discard {C:attention}#2#{} random cards",
+					"when hand is played."
 				}
 			}
 		},

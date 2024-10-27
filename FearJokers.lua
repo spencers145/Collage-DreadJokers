@@ -23,12 +23,12 @@ function SMODS.INIT.FearJokers()
         py = 95
     })
 
-    --[[ Adding Jokers
+    -- Adding Jokers
     local card_add_deck = Card.add_to_deck
     function Card:add_to_deck(from_debuff)
         if not self.added_to_deck then
-            if self.ability.name == 'j_tma_Boneturner' then
-                G.hand:change_size(-self.ability.extra.h_size)
+            if self.ability.name == 'j_tma_Piper' then
+                G.hand:change_size(self.ability.extra.h_size)
             end
         end
         return card_add_deck(self, from_debuff)
@@ -37,12 +37,12 @@ function SMODS.INIT.FearJokers()
     local card_remove_deck = Card.remove_from_deck
     function Card:remove_from_deck(from_debuff)
         if self.added_to_deck then
-            if self.ability.name == 'j_tma_Boneturner' then
-                G.hand:change_size(self.ability.extra.h_size)
+            if self.ability.name == 'j_tma_Piper' then
+                G.hand:change_size(-self.ability.extra.h_size)
             end
         end
         return card_remove_deck(self, from_debuff)
-    end ]]--
+    end
 
     -- Cool Straights :))))
     local cool_get_straight = get_straight
@@ -417,7 +417,28 @@ function SMODS.INIT.FearJokers()
             if SMODS.end_calculate_context(context) and #G.deck.cards == 0 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.woah_x_mult}},
-                    Xmult_mod = card.ability.x_mult
+                    Xmult_mod = card.ability.woah_x_mult
+                }
+            end
+        end
+    })
+
+    -- Extinction
+    SMODS.Joker({
+        key = 'tma_Extinction', atlas = 'tma_joker', pos = {x = 4, y = 1}, rarity = 1, cost = 3, blueprint_compat = true, 
+        config = {
+            extra = {
+                cool_x_mult = 5
+            }
+        },
+        loc_vars = function(self,info_queue,card)
+            return {vars = {card.ability.extra.cool_x_mult}, G.GAME.starting_deck_size/2}
+        end,
+        calculate = function(self,card,context)
+            if SMODS.end_calculate_context(context) and (G.GAME.starting_deck_size/2 - #G.playing_cards) > 0 then
+                return {
+                    message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
+                    Xmult_mod = card.ability.extra.cool_x_mult
                 }
             end
         end
@@ -513,6 +534,44 @@ function SMODS.INIT.FearJokers()
             end
         end
     })
+    
+    -- Piper
+    SMODS.Joker({
+        key = 'tma_Piper', atlas = 'tma_joker', pos = {x = 5, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
+        config = {
+            extra = {
+                h_size = 2,
+                discard_rand = 2
+            }
+        },
+        loc_vars = function(self,info_queue,card)
+            return {
+                vars = {card.ability.extra.h_size, card.ability.extra.discard_rand}
+            }
+        end,
+        calculate = function(self,card,context)
+            if context.before then
+                G.E_MANAGER:add_event(Event({ func = function()
+                    local any_selected = nil
+                    local _cards = {}
+                    for k, v in ipairs(G.hand.cards) do
+                        _cards[#_cards+1] = v
+                    end
+                    for i = 1, 2 do
+                        if G.hand.cards[i] then 
+                            local selected_card, card_key = pseudorandom_element(_cards, pseudoseed('hook'))
+                            G.hand:add_to_highlighted(selected_card, true)
+                            table.remove(_cards, card_key)
+                            any_selected = true
+                            play_sound('card1', 1)
+                        end
+                    end
+                    card:juice_up()
+                    if any_selected then G.FUNCS.discard_cards_from_highlighted(nil, true) end
+                return true end }))
+            end
+        end
+    })
 
     -- Distortion
     SMODS.Joker({
@@ -602,7 +661,7 @@ function SMODS.INIT.FearJokers()
                     Xmult_mod = card.ability.x_mult
                 }
             end
-            if context.destroying_card and not context.blueprint and context.full_hand[1].base.value == card.ability.extra.rank and #context.full_hand == 1 then
+            if context.destroying_card and not context.blueprint and (context.full_hand[1].base.value == card.ability.extra.rank or ((context.full_hand[i].base.value == 'Jack' or context.full_hand[i].base.value == 'Queen' or context.full_hand[i].base.value == 'King') and next(find_joker('j_tma_Boneturner')) and card.ability.extra.rank == 'Jack' or card.ability.extra.rank == 'Queen' or card.ability.extra.rank == 'King')) and #context.full_hand == 1 then
                 local playcard = context.full_hand[1]
                 card.ability.x_mult = card.ability.x_mult + card.ability.extra.bonus_mult
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.x_mult}}, colour = G.C.RED, card = card})
@@ -621,11 +680,35 @@ function SMODS.INIT.FearJokers()
     SMODS.Consumable {
         set = 'Tarot', atlas = 'tma_tarot', key = 'tma_the_rot',
         pos = { x = 0, y = 0 },
-        config = {max_highlighted = 1, mod_conv = 'm_stone'}, hidden = true,
+        config = {max_highlighted = 1}, hidden = true,
         in_pool = function(self)
             return false
         end,
-        loc_vars = function(self) return {vars = {self.config.max_highlighted}} end, effect = "Enhance", cost_mult = 1.0
+        loc_vars = function(self) return {vars = {self.config.max_highlighted}} end, cost_mult = 1.0, effect = "Card Removal",
+        use_consumeable = function(self, card, area,copier)
+            local destroyed_cards = {}
+            for i=#G.hand.highlighted, 1, -1 do
+                destroyed_cards[#destroyed_cards+1] = G.hand.highlighted[i]
+            end
+            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                play_sound('tarot1')
+                used_tarot:juice_up(0.3, 0.5)
+                return true end }))
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.2,
+                    func = function() 
+                    for i=#G.hand.highlighted, 1, -1 do
+                        local card = G.hand.highlighted[i]
+                        if card.ability.name == 'Glass Card' then 
+                            card:shatter()
+                        else
+                            card:start_dissolve(nil, i == #G.hand.highlighted)
+                        end
+                    end
+                return true 
+            end }))
+        end
     }
     --[[
     SMODS.Enhancement {
