@@ -580,7 +580,7 @@ function SMODS.INIT.FearJokers()
 
     -- Nikola Orsinov
     SMODS.Joker({
-        key = 'tma_Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = true,
+        key = 'tma_Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = false,
         calculate = function(self,card,context)
             if context.retrigger_joker_check and not context.retrigger_joker then
 				return {
