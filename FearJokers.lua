@@ -435,7 +435,7 @@ function SMODS.INIT.FearJokers()
             return {vars = {card.ability.extra.cool_x_mult}, G.GAME.starting_deck_size/2}
         end,
         calculate = function(self,card,context)
-            if SMODS.end_calculate_context(context) and (G.GAME.starting_deck_size/2 - #G.playing_cards) > 0 then
+            if SMODS.end_calculate_context(context) and ((G.GAME.starting_deck_size or 52)/2 - #G.playing_cards) > 0 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
                     Xmult_mod = card.ability.extra.cool_x_mult
