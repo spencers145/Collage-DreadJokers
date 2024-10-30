@@ -5,7 +5,7 @@
 --- MOD_AUTHOR: [LunaAstraCassiopeia]
 --- MOD_DESCRIPTION: Some Jokers inspired by the Magnus Archives podcast
 --- BADGE_COLOR: 56A786
---- VERSION: 1.0.2
+--- VERSION: 1.0.3
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -590,7 +590,7 @@
     SMODS.Joker({
         key = 'Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = false,
         calculate = function(self,card,context)
-            if context.retrigger_joker_check and not context.retrigger_joker then
+            if context.retrigger_joker_check and not context.retrigger_joker and context.other_card.config.center.rarity == 3 and context.other_card ~= self then
 				return {
 					message = localize('k_again_ex'),
 					repetitions = self.config.num_retriggers,
