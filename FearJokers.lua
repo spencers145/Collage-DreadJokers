@@ -5,7 +5,7 @@
 --- MOD_AUTHOR: [LunaAstraCassiopeia]
 --- MOD_DESCRIPTION: Some Jokers inspired by the Magnus Archives podcast
 --- BADGE_COLOR: 56A786
---- VERSION: 1.0.1
+--- VERSION: 1.0.2
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
