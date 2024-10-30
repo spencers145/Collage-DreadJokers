@@ -103,10 +103,10 @@ return {
 			["j_tma_Boneturner"] = {
 				["name"] = "Boneturner",
 				["text"] = {
-					"{C:attention}Kings{}, {C:attention}Queens{},",
-					"and {C:attention}Jacks{} are considered",
-					"the same {C:attention}Rank{}",
-					"{C:inactive}(May not work with other mods)"
+					"{C:attention}Kings{}, {C:attention}Queens{}, and",
+					"{C:attention}Jacks{} are considered",
+					"as the same {C:attention}Rank{}",
+					"{C:inactive, S:0.8}(May not work with other mods)"
 				},
 			},
 			["j_tma_FallenTitan"] = {
@@ -133,7 +133,7 @@ return {
 			["j_tma_Nikola"] = {
 				["name"] = "Nikola",
 				["text"] = {
-					"Retriggers all {C:attention}Jokers{}"
+					"Retriggers all {C:red}Rare {C:attention}Jokers{}"
 				},
 			},
 			["j_tma_Hunter"] = {
