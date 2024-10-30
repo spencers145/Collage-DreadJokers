@@ -11,8 +11,8 @@ return {
 			["c_tma_the_rot"] = {
 				["name"] = "The Rot",
 				["text"] = {
-					"Destroys {C:attention}1{}",
-					"selected card."
+					"Creates {C:attention}1{} random",
+					"{C:dark_edition}Negative {C:tarot}Tarot{} card"
 				},
 			}
 		},
@@ -40,9 +40,9 @@ return {
 			["m_tma_rotting"] = {
 				["name"] = "Rotting Card",
 				["text"] = {
-					"{C:mult}+#1#{} Mult.",
+					"{C:mult}+#1#{} Mult",
 					"Loses {C:mult}+#2#{} Mult",
-					"when played."
+					"when played"
 				}
 			}
 		},
@@ -52,34 +52,35 @@ return {
 				["text"] = {
 					"This Joker gains {X:mult,C:white}X#2#{} Mult",
 					"for every {C:spades}Spade{} Card",
-					"played this round.",
+					"scored this round",
 					"{C:inactive}(Currently {X:mult,C:white}X#1#{C:inactive} Mult)"
 				},
 			},
 			["j_tma_PlagueDoctor"] = {
 				["name"] = "Plague Doctor",
 				["text"] = {
-					"{C:purple}Rots{} all {C:attention}consumable{} cards in",
-					"your possession at the ",
-					"end of the {C:attention}shop"
+					"{C:purple}Rots{} all {C:attention}consumable{} cards",
+					"in your possession at ",
+					"the end of the {C:attention}shop"
 				},
 			},
 			["j_tma_BlindSun"] = {
 				["name"] = "Eclipse",
 				["text"] = {
 					"{C:green}#1# in #2#{} cards are",
-					"drawn face down.",
+					"drawn face down,",
 					"Face down cards give",
-					"{C:mult}+#3#{} Mult when played"
+					"{C:mult}+#3#{} Mult when scored"
 				},
 			},
 			["j_tma_LightlessFlame"] = {
 				["name"] = "Lightless Flame",
 				["text"] = {
-					"When blind is selected, destroy",
-					"held {C:attention}consumable{} cards and",
-					"gain {C:mult}+#2#{} Mult for each destroyed",
-					"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult.)"
+					"When blind is selected,",
+					"destroy {C:attention}consumable{} cards",
+					"in possesion and gain",
+					"{C:mult}+#2#{} Mult for each",
+					"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
 				},
 			},
 			["j_tma_LastLaugh"] = {
@@ -87,23 +88,25 @@ return {
 				["text"] = {
 					"{X:mult,C:white}X#1#{} Mult if there",
 					"are no more",
-					"cards in {C:attention}deck{}."
+					"cards in {C:attention}deck{}"
 				},
 			},
 			["j_tma_Panopticon"] = {
 				["name"] = "Panopticon",
 				["text"] = {
 					"{C:chips}+#1#{} Chips per unique",
-					"{C:blue}Spectral{} card used this run.",
-					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips.)"
+					"{C:spectral}Spectral{} card",
+					"used this run",
+					"{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)"
 				},
 			},
 			["j_tma_Boneturner"] = {
 				["name"] = "Boneturner",
 				["text"] = {
-					"{C:attention}Kings{}, {C:attention}Queens{}, and {C:attention}Jacks{}",
-					"are considered the same {C:attention}Rank{}.",
-					"{C:inactive}(May not work with other mods.)"
+					"{C:attention}Kings{}, {C:attention}Queens{},",
+					"and {C:attention}Jacks{} are considered",
+					"the same {C:attention}Rank{}",
+					"{C:inactive}(May not work with other mods)"
 				},
 			},
 			["j_tma_FallenTitan"] = {
@@ -117,14 +120,14 @@ return {
 				["name"] = "Lonely Joker",
 				["text"] = {
 					"This Joker gains {C:mult}+#1#{} Mult",
-					"if played hand is {C:attention}#3#{}.",
-					"{C:inactive}(Currently {C:mult}+#2#{C:inactive}.)"
+					"if played hand is {C:attention}#3#{}",
+					"{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
 				},
 			},
 			["j_tma_Distortion"] = {
 				["name"] = "Distortion",
 				["text"] = {
-					"{C:chips,E:1}It is not what it is."
+					"{C:chips,E:1}It{E:1} is not what {C:chips,E:1}it{E:1} is"
 				},
 			},
 			["j_tma_Nikola"] = {
@@ -144,25 +147,25 @@ return {
 				["name"] = "Mr. Spider",
 				["text"] = {
 					"If hand is a single {C:attention}#3#{},",
-					"destroy it and gain {C:white,X:mult}X#1#{} Mult.",
-					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult.)",
-					"{C:inactive}(Rank changes every round.)",				
+					"destroy it and gain {C:white,X:mult}X#1#{} Mult,",
+					"{s:0.8}Rank changes every round",				
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)",
 				}
 			},
 			["j_tma_Extinction"] = {
 				["name"] = "The Extinction",
 				["text"] = {
-					"{X:mult,C:white}X#1#{} Mult if",
-					"your full deck has less",
-					"than {C:attention}#2#{} cards."
+					"{X:mult,C:white}X#1#{} Mult if your",
+					"full deck has less",
+					"than {C:attention}#2#{} cards"
 				}
 			},
 			["j_tma_Piper"] = {
 				["name"] = "Pied Piper",
 				["text"] = {
-					"{C:attention}+#1#{} hand size.",
+					"{C:attention}+#1#{} hand size,",
 					"Discard {C:attention}#2#{} random cards",
-					"when hand is played."
+					"when hand is played"
 				}
 			}
 		},

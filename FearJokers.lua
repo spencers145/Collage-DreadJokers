@@ -1,14 +1,16 @@
 --- STEAMODDED HEADER
 --- MOD_NAME: The Dread Jokers
 --- MOD_ID: FearJokers
+--- PREFIX: tma
 --- MOD_AUTHOR: [LunaAstraCassiopeia]
 --- MOD_DESCRIPTION: Some Jokers inspired by the Magnus Archives podcast
+--- BADGE_COLOR: 56A786
+--- VERSION: 1.0.1
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
 
-function SMODS.INIT.FearJokers()
 
     SMODS.Atlas({
         key = 'tma_tarot',
@@ -21,6 +23,12 @@ function SMODS.INIT.FearJokers()
         path = 'Jokers.png',
         px = 71,
         py = 95
+    })
+    SMODS.Atlas({
+        key = 'modicon',
+        path = 'modicon.png',
+        px = '34',
+        py = '34'
     })
 
     -- Adding Jokers
@@ -229,7 +237,7 @@ function SMODS.INIT.FearJokers()
 
     --NowhereToGo
     SMODS.Joker({
-        key = 'tma_NowhereToGo', atlas = 'tma_joker', pos = {x = 0, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
+        key = 'NowhereToGo', atlas = 'tma_joker', pos = {x = 0, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
         config = {
             x_mult = 1,
             extra = {
@@ -267,7 +275,7 @@ function SMODS.INIT.FearJokers()
     
     -- Plague Doctor
     SMODS.Joker({
-        key = 'tma_PlagueDoctor', atlas = 'tma_joker', pos = {x = 1, y = 0}, rarity = 2, cost = 5, blueprint_compat = false, 
+        key = 'PlagueDoctor', atlas = 'tma_joker', pos = {x = 1, y = 0}, rarity = 2, cost = 5, blueprint_compat = false, 
         calculate = function(self,card,context)
             if context.ending_shop then
                 for k, v in ipairs(G.consumeables.cards) do
@@ -315,7 +323,7 @@ function SMODS.INIT.FearJokers()
     })
     --Blind Sun 
     SMODS.Joker({
-        key = 'tma_BlindSun', atlas = 'tma_joker', pos = {x = 2, y = 0}, rarity = 2, cost = 8, blueprint_compat = true, 
+        key = 'BlindSun', atlas = 'tma_joker', pos = {x = 2, y = 0}, rarity = 2, cost = 8, blueprint_compat = true, 
         name = 'tma_BlindSun',
         config = {
             name = 'tma_BlindSun',
@@ -362,11 +370,11 @@ function SMODS.INIT.FearJokers()
     
     -- Lightless Flame
     SMODS.Joker({
-        key = 'tma_LightlessFlame', atlas = 'tma_joker', pos = {x = 3, y = 0}, rarity = 1, cost = 4, blueprint_compat = true, perishable_compat = false,
+        key = 'LightlessFlame', atlas = 'tma_joker', pos = {x = 3, y = 0}, rarity = 1, cost = 4, blueprint_compat = true, perishable_compat = false,
         config = {
             mult_mod = 0,
             extra = {
-                bonus_mult = 3,
+                bonus_mult = 2,
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -402,7 +410,7 @@ function SMODS.INIT.FearJokers()
 
     -- Last Laugh
     SMODS.Joker({
-        key = 'tma_LastLaugh', atlas = 'tma_joker', pos = {x = 4, y = 0}, rarity = 2, cost = 6, blueprint_compat = true, 
+        key = 'LastLaugh', atlas = 'tma_joker', pos = {x = 4, y = 0}, rarity = 2, cost = 6, blueprint_compat = true, 
         config = {
             extra = {
                 woah_x_mult = 20
@@ -425,17 +433,17 @@ function SMODS.INIT.FearJokers()
 
     -- Extinction
     SMODS.Joker({
-        key = 'tma_Extinction', atlas = 'tma_joker', pos = {x = 4, y = 1}, rarity = 1, cost = 3, blueprint_compat = true, 
+        key = 'Extinction', atlas = 'tma_joker', pos = {x = 4, y = 1}, rarity = 1, cost = 3, blueprint_compat = true, 
         config = {
             extra = {
                 cool_x_mult = 5
             }
         },
         loc_vars = function(self,info_queue,card)
-            return {vars = {card.ability.extra.cool_x_mult}, G.GAME.starting_deck_size/2}
+            return {vars = {card.ability.extra.cool_x_mult, (G.GAME.starting_deck_size or 52)/2}}
         end,
         calculate = function(self,card,context)
-            if SMODS.end_calculate_context(context) and ((G.GAME.starting_deck_size or 52)/2 - #G.playing_cards) > 0 then
+            if SMODS.end_calculate_context(context) and ((G.GAME.starting_deck_size)/2 - #G.playing_cards) > 0 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
                     Xmult_mod = card.ability.extra.cool_x_mult
@@ -446,7 +454,7 @@ function SMODS.INIT.FearJokers()
 
     -- Panopticon
     SMODS.Joker({
-        key = 'tma_Panopticon', atlas = 'tma_joker', pos = {x = 5, y = 0}, rarity = 3, cost = 7, blueprint_compat = true, 
+        key = 'Panopticon', atlas = 'tma_joker', pos = {x = 5, y = 0}, rarity = 3, cost = 7, blueprint_compat = true, 
         config = {
             extra = {
                 chips = 0,
@@ -474,12 +482,12 @@ function SMODS.INIT.FearJokers()
 
     -- Boneturner
     SMODS.Joker({
-        key = 'tma_Boneturner', atlas = 'tma_joker', pos = {x = 6, y = 0}, rarity = 3, cost = 8, blueprint_compat = false
+        key = 'Boneturner', atlas = 'tma_joker', pos = {x = 6, y = 0}, rarity = 3, cost = 8, blueprint_compat = false
     })
 
     -- Hunter
     SMODS.Joker({
-        key = 'tma_Hunter', atlas = 'tma_joker', pos = {x = 3, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
+        key = 'Hunter', atlas = 'tma_joker', pos = {x = 3, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
         config = {
             extra = {
                 money = 3
@@ -505,7 +513,7 @@ function SMODS.INIT.FearJokers()
     
     -- Lonely Joker
     SMODS.Joker({
-        key = 'tma_Lonely', atlas = 'tma_joker', pos = {x = 8, y = 0}, rarity = 1, cost = 5, blueprint_compat = true, perishable_compat = false,
+        key = 'Lonely', atlas = 'tma_joker', pos = {x = 8, y = 0}, rarity = 1, cost = 5, blueprint_compat = true, perishable_compat = false,
         config = {
             mult_mod = 0,
             extra = {
@@ -537,7 +545,7 @@ function SMODS.INIT.FearJokers()
     
     -- Piper
     SMODS.Joker({
-        key = 'tma_Piper', atlas = 'tma_joker', pos = {x = 5, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
+        key = 'Piper', atlas = 'tma_joker', pos = {x = 5, y = 1}, rarity = 2, cost = 6, blueprint_compat = true,
         config = {
             extra = {
                 h_size = 2,
@@ -575,12 +583,12 @@ function SMODS.INIT.FearJokers()
 
     -- Distortion
     SMODS.Joker({
-        key = 'tma_Distortion', atlas = 'tma_joker', pos = {x = 9, y = 0}, rarity = 1, cost = 4, blueprint_compat = false
+        key = 'Distortion', atlas = 'tma_joker', pos = {x = 9, y = 0}, rarity = 1, cost = 4, blueprint_compat = false
     })
 
     -- Nikola Orsinov
     SMODS.Joker({
-        key = 'tma_Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = false,
+        key = 'Nikola', atlas = 'tma_joker', pos = {x = 0, y = 1}, soul_pos = {x = 1, y = 1}, rarity = 4, cost = 20, blueprint_compat = false,
         calculate = function(self,card,context)
             if context.retrigger_joker_check and not context.retrigger_joker then
 				return {
@@ -594,7 +602,7 @@ function SMODS.INIT.FearJokers()
 
     -- Fallen Titan
     SMODS.Joker({
-        key = 'tma_FallenTitan', atlas = 'tma_joker', pos = {x = 7, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
+        key = 'FallenTitan', atlas = 'tma_joker', pos = {x = 7, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
         config = {
             extra = {
                 bonus_chips = 30
@@ -625,7 +633,7 @@ function SMODS.INIT.FearJokers()
 
     -- Mr Spider
     SMODS.Joker({
-        key = 'tma_MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, 
+        key = 'MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, 
         config = {
             x_mult = 1,
             extra = {
@@ -678,41 +686,36 @@ function SMODS.INIT.FearJokers()
     
     -- The Rot (Tarot)
     SMODS.Consumable {
-        set = 'Tarot', atlas = 'tma_tarot', key = 'tma_the_rot',
+        set = 'Tarot', atlas = 'tma_tarot', key = 'the_rot', consumable = true,
         pos = { x = 0, y = 0 },
-        config = {max_highlighted = 1}, hidden = true,
+        config = {tarots = 1}, hidden = true,
+        can_use = function(self, card)
+            return true
+        end,
         in_pool = function(self)
             return false
         end,
-        loc_vars = function(self) return {vars = {self.config.max_highlighted}} end, cost_mult = 1.0, effect = "Card Removal",
-        use_consumeable = function(self, card, area,copier)
-            local destroyed_cards = {}
-            for i=#G.hand.highlighted, 1, -1 do
-                destroyed_cards[#destroyed_cards+1] = G.hand.highlighted[i]
-            end
+        loc_vars = function(self) return {vars = {self.config.tarots}} end, cost_mult = 1.0, effect = "Round Bonus",
+        use = function(self, card, area,copier)
             G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                play_sound('tarot1')
-                used_tarot:juice_up(0.3, 0.5)
+                if G.consumeables.config.card_limit > #G.consumeables.cards then
+                    play_sound('timpani')
+                    local new_card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'rot')
+                    new_card:set_cost(0)
+                    new_card:set_edition({negative = true}, true)
+                    new_card:add_to_deck()
+                    G.consumeables:emplace(new_card)
+                    card:juice_up(0.3, 0.5)
+                end
                 return true end }))
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.2,
-                    func = function() 
-                    for i=#G.hand.highlighted, 1, -1 do
-                        local card = G.hand.highlighted[i]
-                        if card.ability.name == 'Glass Card' then 
-                            card:shatter()
-                        else
-                            card:start_dissolve(nil, i == #G.hand.highlighted)
-                        end
-                    end
-                return true 
-            end }))
+            delay(0.6)
         end
     }
+
+    
     --[[
     SMODS.Enhancement {
-        set = 'Enhanced', atlas = 'tma_tarot', key = 'tma_rotting',
+        set = 'Enhanced', atlas = 'tma_tarot', key = 'rotting',
         pos = {x=0,y=1},
         config = {mult = 20, lose_mult = 5},
         loc_vars = function(self) return {vars = {self.config.mult, self.config.lose_mult}} end,
@@ -740,7 +743,7 @@ function SMODS.INIT.FearJokers()
         badges[#badges + 1] = create_badge(localize('k_planet_q'), get_type_colour(self or card.ability, card), nil, 1.2)
     end
     SMODS.Consumable {
-        set = 'Planet', atlas = 'tma_tarot', key = 'tma_colony',
+        set = 'Planet', atlas = 'tma_tarot', key = 'colony',
         pos = { x = 1, y = 0 },hidden = true,
         set_card_type_badge = planet_q,
         can_use = function(self, card)
@@ -784,7 +787,7 @@ function SMODS.INIT.FearJokers()
     }
     -- Decay (Spectral)
     SMODS.Consumable {
-        set = 'Spectral', atlas = 'tma_tarot', key = 'tma_decay',
+        set = 'Spectral', atlas = 'tma_tarot', key = 'decay',
         pos = { x = 2, y = 0 }, hidden = true,
         can_use = function(self, card)
             for k, v in pairs(G.jokers.cards) do
@@ -812,7 +815,6 @@ function SMODS.INIT.FearJokers()
                 return true end }))
         end,
     }
-end
 
 ----------------------------------------------
 ------------MOD CODE END----------------------
