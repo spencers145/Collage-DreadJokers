@@ -2,10 +2,10 @@
 --- MOD_NAME: The Dread Jokers
 --- MOD_ID: FearJokers
 --- PREFIX: tma
---- MOD_AUTHOR: [LunaAstraCassiopeia]
+--- MOD_AUTHOR: [LunaAstraCassiopeia, AnneBean]
 --- MOD_DESCRIPTION: Some Jokers inspired by the Magnus Archives podcast
 --- BADGE_COLOR: 56A786
---- VERSION: 1.0.3
+--- VERSION: 1.0.4
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
