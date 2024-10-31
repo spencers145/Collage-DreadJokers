@@ -413,7 +413,7 @@
         key = 'LastLaugh', atlas = 'tma_joker', pos = {x = 4, y = 0}, rarity = 2, cost = 6, blueprint_compat = true, 
         config = {
             extra = {
-                woah_x_mult = 20
+                woah_x_mult = 15
             }
         },
         loc_vars = function(self,info_queue,card)
