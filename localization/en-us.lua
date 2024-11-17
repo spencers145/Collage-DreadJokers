@@ -190,7 +190,7 @@ return {
 				["name"] = "Coffin",
 				["text"] = {
 					"Gives {C:money}$#1#{} when bought,",
-					"Destroys an adjacent Joker",
+					"Destroys leftmost Joker",
 					"when sold"
 				}
 			},

@@ -5,7 +5,7 @@
 --- MOD_AUTHOR: [LunaAstraCassiopeia]
 --- MOD_DESCRIPTION: Some Jokers inspired by the Magnus Archives podcast
 --- BADGE_COLOR: 56A786
---- VERSION: 1.0.1
+--- VERSION: 1.1.1
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -713,7 +713,8 @@
         key = 'Coffin', atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 1, cost = 1, blueprint_compat = false,
         config = {
             extra = {
-                dollars = 20
+                dollars = 20,
+                my_pos = nil
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -737,11 +738,7 @@
             end
             if not from_debuff and #jokers > 0 then 
                 card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
-                local my_pos = nil
-                for i = 1, #G.jokers.cards do
-                    if G.jokers.cards[i] == card then my_pos = i; break end
-                end
-                local chosen_joker = ((G.jokers.cards[my_pos+1]) or G.jokers.cards[my_pos+1])
+                local chosen_joker = ((G.jokers.cards[1]))
                 if not chosen_joker.ability.eternal then
                     chosen_joker.getting_sliced = true
                     G.GAME.joker_buffer = G.GAME.joker_buffer - 1
