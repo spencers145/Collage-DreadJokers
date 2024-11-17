@@ -479,7 +479,7 @@
 
     -- Panopticon
     SMODS.Joker({
-        key = 'Panopticon', atlas = 'tma_joker', pos = {x = 5, y = 0}, rarity = 3, cost = 7, blueprint_compat = true, 
+        key = 'Panopticon', atlas = 'tma_joker', pos = {x = 5, y = 0}, rarity = 3, cost = 7, blueprint_compat = true, perishable_compat = false,
         config = {
             extra = {
                 chips = 0,
@@ -657,7 +657,7 @@
 
     -- Mr Spider
     SMODS.Joker({
-        key = 'MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, 
+        key = 'MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, perishable_compat = false,
         config = {
             x_mult = 1,
             extra = {
@@ -710,7 +710,7 @@
 
     -- Coffin
     SMODS.Joker({
-        key = 'Coffin', atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 1, cost = 1, blueprint_compat = false,
+        key = 'Coffin', atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 1, cost = 1, blueprint_compat = false, eternal_compat = false,
         config = {
             extra = {
                 dollars = 20,
@@ -760,7 +760,7 @@
 
     -- Syringe
     SMODS.Joker({
-        key = 'Syringe', atlas = 'tma_joker', pos = {x = 7, y = 1}, rarity = 2, cost = 5, blueprint_compat = false,
+        key = 'Syringe', atlas = 'tma_joker', pos = {x = 7, y = 1}, rarity = 2, cost = 5, blueprint_compat = false, eternal_compat = false,
         calculate = function(self,card,context)
             if context.selling_self and G.GAME.blind then
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4,func = function()
@@ -892,7 +892,7 @@
 
     -- Archivist Joker
     SMODS.Joker({
-        key = 'Archivist', atlas = 'tma_joker', pos = {x = 2, y = 2}, rarity = 1, cost = 5, blueprint_compat = true,
+        key = 'Archivist', atlas = 'tma_joker', pos = {x = 2, y = 2}, rarity = 1, cost = 5, blueprint_compat = true, perishable_compat = false,
         config = {
             extra = {
                 chips = 0
@@ -1062,7 +1062,7 @@
 
     -- Mannequin
     SMODS.Joker({
-        key = 'Mannequin', atlas = 'tma_joker', pos = {x = 8, y = 2}, rarity = 1, cost = 2, blueprint_compat = false,
+        key = 'Mannequin', atlas = 'tma_joker', pos = {x = 8, y = 2}, rarity = 1, cost = 2, blueprint_compat = false, eternal_compat = false,
         config = {
             extra = {
                 last_sold = nil
@@ -1132,7 +1132,7 @@
         key = 'Marionette', atlas = 'tma_joker', pos = {x = 0, y = 3}, rarity = 1, cost = 6, blueprint_compat = true,
         config = {
             extra = {
-                mult_mod = 6,
+                mult_mod = 5,
                 triggers = 0,
             }
         },
