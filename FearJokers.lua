@@ -269,7 +269,7 @@
         key = 'NowhereToGo', atlas = 'tma_joker', pos = {x = 0, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
         config = {
             extra = {
-                percent_chips = 0.2,
+                percent_chips = 0.1,
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -278,8 +278,8 @@
             }
         end,
         calculate = function(self,card,context)
-            if context.individual and not context.blueprint and context.cardarea == G.play and context.other_card:is_suit("Spades") then
-                G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4,func = function()
+            if context.individual and context.cardarea == G.play and context.other_card:is_suit("Spades") and not context.other_card.debuff then
+                G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.2,func = function()
                     G.GAME.blind.chips = math.floor(G.GAME.blind.chips * (1-card.ability.extra.percent_chips))
                     G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 
@@ -288,12 +288,12 @@
                     G.HUD_blind:recalculate() 
                     chips_UI:juice_up()
             
-                    if not silent then play_sound('chips2') end
+                    if not silent then play_sound('chips1') end
                     return true end }))
                 return {
                     extra = {message = localize('k_dig_ex'), colour = HEX("7a5830"), focus = card},
                     colour = HEX("7a5830"),
-                    card = card
+                    card = context.card
                 }
             end
         end
@@ -380,7 +380,7 @@
                     end
                 end
             end
-            if context.individual and context.cardarea == G.play and context.other_card then
+            if context.individual and context.cardarea == G.play and context.other_card and not context.other_card.debuff then
                 for i = 1, #card.ability.extra.card_list do
                     local flipped_card = card.ability.extra.card_list[i]
                     if context.other_card == flipped_card then
@@ -928,7 +928,7 @@
         config = {
             extra = {
                 repetitions = 1,
-                active = false
+                active = true
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -954,7 +954,7 @@
                 end
             end
             if context.before then
-                card.ability.extra.active = false
+                card.ability.extra.active = true
             end
         end
     })
