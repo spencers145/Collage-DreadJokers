@@ -1127,42 +1127,6 @@
 
     })
     
-    -- 
-    SMODS.Joker({
-        key = 'Marionette', atlas = 'tma_joker', pos = {x = 0, y = 3}, rarity = 1, cost = 6, blueprint_compat = true,
-        config = {
-            extra = {
-                mult_mod = 5,
-                triggers = 0,
-            }
-        },
-        loc_vars = function(self, info_queue, card)
-            return {
-                vars = {card.ability.extra.mult_mod}
-            }
-        end,
-        calculate = function(self,card,context)
-            if context.post_trigger and not context.blueprint then
-                local other_joker = nil
-                for i = 1, #G.jokers.cards do
-                    if G.jokers.cards[i] == card then other_joker = G.jokers.cards[i-1] end
-                end
-                if context.other_joker == other_joker then
-                    card.ability.extra.triggers = card.ability.extra.triggers + 1
-                    return nil
-                end
-            end
-            if SMODS.end_calculate_context(context) and card.ability.extra.triggers > 0 then
-                local trigs = card.ability.extra.triggers or 0
-                card.ability.extra.triggers = 0
-                return {
-                    mult_mod = card.ability.extra.mult_mod*trigs,
-                    message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult_mod*trigs}},
-                }
-            end
-        end
-    })
-    
     -- The Rot (Tarot)
     SMODS.Consumable {
         set = 'Tarot', atlas = 'tma_tarot', key = 'the_rot', consumable = true,
