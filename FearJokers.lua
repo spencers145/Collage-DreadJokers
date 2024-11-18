@@ -225,44 +225,6 @@
         end
         return ret
     end
-    
-    --[[ Wild Faces
-    local card_get_id = Card.get_id
-    function Card:get_id()
-        local id = card_get_id(self)
-        if id == 11 or id == 12 or id == 13 then
-            if next(find_joker('j_tma_Boneturner')) then
-                return 1006
-            end
-        end
-        return card_get_id(self)
-    end
-    
-    local card_is_face = Card.is_face
-    function Card:is_face(from_boss)
-        local id = self:get_id()
-        if id == 1006 then
-            return true
-        end
-        return card_is_face(self, from_boss)
-    end ]]--
-        
-    
-    --[[local card_is_suit = Card.get_id
-    function Card:is_suit(suit, bypass_debuff, flush_calc)
-        if self:is_face() then
-            if flush_calc then
-                if next(find_joker('j_tma_Boneturner')) then
-                    return true
-                end
-            else
-                if next(find_joker('j_tma_Boneturner')) then
-                    return true
-                end
-            end
-        end
-        return card_is_suit(self, suit, bypass_debuff, flush_calc)
-    end ]]--
 
     --NowhereToGo
     SMODS.Joker({
