@@ -75,6 +75,7 @@
                     if v.ability.name == 'j_tma_Mannequin' and self.ability.name ~= 'j_tma_Mannequin' then 
                         v.ability.extra.last_sold = self
                     end
+                    G.GAME.last_sold_joker = self
                 end
             end
         end
@@ -842,7 +843,7 @@
         calculate = function(self, card, context)
             for i = 1, #G.jokers.cards do
                 if G.jokers.cards[i] == card then
-                    if context.retrigger_joker_check and not context.retrigger_joker and context.other_card.config.center.rarity == 1 and context.other_card ~= card and (context.other_card == G.joker.card[i+1] or context.other_card == G.joker.card[i-1]) then
+                    if context.retrigger_joker_check and not context.retrigger_joker and context.other_card.config.center.rarity == 1 and context.other_card ~= card and (context.other_card == G.jokers.cards[i+1] or context.other_card == G.jokers.cards[i-1]) then
                     return {
                       message = localize('k_again_ex'),
                       repetitions = 1,
@@ -859,12 +860,13 @@
         key = 'Archivist', atlas = 'tma_joker', pos = {x = 2, y = 2}, rarity = 1, cost = 5, blueprint_compat = true, perishable_compat = false,
         config = {
             extra = {
-                chips = 0
+                chips = 0,
+                gold = 1
             }
         },
         loc_vars = function(self,info_queue,card)
             return {
-                vars = {card.ability.extra.chips}
+                vars = {card.ability.extra.chips, card.ability.extra.gold}
             }
         end,
         calculate = function(self, card, context)
@@ -874,6 +876,18 @@
                     func = function() card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}}}); return true
                     end}))
                 return
+            end
+            if context.end_of_round then 
+                for k, v in ipairs(G.consumeables.cards) do
+                    if v.set_cost then 
+                        v.ability.extra_value = (v.ability.extra_value or 0) + self.ability.extra.gold
+                        v:set_cost()
+                    end
+                end
+                return {
+                    message = localize('k_val_up'),
+                    colour = G.C.MONEY
+                }
             end
             if SMODS.end_calculate_context(context) then
                 return {
@@ -1034,16 +1048,23 @@
         },
         loc_vars = function(self, info_queue, card)
             if card.ability.extra.last_sold ~= nil and card.ability.extra.last_sold.ability.name ~= nil then
-                local name_sold = card.ability.extra.last_sold.ability.name and G.P_CENTERS[card.ability.extra.last_sold.ability.name] or nil
+                local name_sold = card.ability.extra.last_sold.ability.name and G.P_CENTERS[card.ability.extra.last_sold.config.center_key] or nil
                 return {
                     vars = {(name_sold and (localize{type = 'name_text', key = name_sold.key, set = name_sold.set}) or name_sold.ability.name)}
                 }
             else
+                if G.GAME.last_sold_joker ~= nil and G.GAME.last_sold_joker.ability.name ~= nil then
+                    local name_sold = G.GAME.last_sold_joker.ability.name and G.P_CENTERS[G.GAME.last_sold_joker.config.center_key] or nil
+                    return {
+                        vars = {(name_sold and (localize{type = 'name_text', key = name_sold.key, set = name_sold.set}) or name_sold.ability.name)}
+                    }
+                else
                 return { vars = {"N/A"}}
+                end
             end
         end,
         calculate = function(self,card,context)
-            if context.selling_self and not context.blueprint then
+            if context.selling_self and not context.blueprint then  
                 local jokers = {}
                 for i=1, #G.jokers.cards do 
                     if G.jokers.cards[i] ~= card then
@@ -1052,14 +1073,20 @@
                 end
                 if #jokers > 0 then 
                     if #G.jokers.cards <= G.jokers.config.card_limit then 
-                        if card.ability.extra.last_sold ~= nil and card.ability.extra.last_sold.ability.name ~= nil then
-                        local last_sold = card.ability.extra.last_sold.ability.name and G.P_CENTERS[card.ability.extra.last_sold.ability.name] or nil
+                        if (card.ability.extra.last_sold ~= nil and card.ability.extra.last_sold.ability.name ~= nil) then
                         card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
                         local new_card = copy_card(card.ability.extra.last_sold, nil, nil, nil, card.ability.extra.last_sold.edition and card.ability.extra.last_sold.edition.negative)
                         new_card:start_materialize()
                         new_card:add_to_deck()
                         G.jokers:emplace(new_card)
+                        elseif G.GAME.last_sold_joker ~= nil and G.GAME.last_sold_joker.ability.name ~= nil then
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
+                            local new_card = copy_card(G.GAME.last_sold_joker, nil, nil, nil, G.GAME.last_sold_joker.edition and G.GAME.last_sold_joker.edition.negative)
+                            new_card:start_materialize()
+                            new_card:add_to_deck()
+                            G.jokers:emplace(new_card)
                         end
+
                     else
                         card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
                     end

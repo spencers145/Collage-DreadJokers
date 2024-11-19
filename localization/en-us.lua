@@ -236,10 +236,10 @@ return {
 			["j_tma_Archivist"] = {
 				["name"] = "Tape Recorder",
 				["text"] = {
-					"When {C:attention}Consumable{} is used,",
-					"adds {C:chips}Chips{} equal to {C:attention}four",
-					"{C:attention}times{} the card's Sell Value",
-					"to this card's {C:chips}Chips}",
+					"At end of round, adds {C:gold}$#2#{} of sell",
+					"value to held {C:attention}Consumable{} cards.",
+					"When {C:attention}Consumable{} is used, gains",
+					"{C:chips}Chips{} equal to {C:attention}4X{} sell value",
 					"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
 				}
 			},
@@ -294,14 +294,14 @@ return {
 				["name"] = "Deep Blue",
 				["text"] = {
 					"Cards {C:attention}held in",
-					"hand give {C:chips}Chips{}"
+					"{C:attention}hand{} give {C:chips}Chips{}"
 				}
 			},
 			["j_tma_Marionette"] = {
 				["name"] = "Marionette",
 				["text"] = {
 					"{C:mult}+#1#{} Mult each time",
-					"the {C:attention}Joker to",
+					"the {C:attention}Joker{} to",
 					"the left triggers",
 				}
 			},
