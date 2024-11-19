@@ -693,31 +693,31 @@
             local eval = function(card) return not card.REMOVED end
             juice_card_until(card, eval, true)
         end,
-        remove_from_deck = function(self, card, from_debuff)
-            local jokers = {}
-            for i=1, #G.jokers.cards do 
-                if G.jokers.cards[i] ~= card then
-                    jokers[#jokers+1] = G.jokers.cards[i]
-                end
-            end
-            if not from_debuff and #jokers > 0 then 
-                card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
-                local chosen_joker = ((G.jokers.cards[1]))
-                if not chosen_joker.ability.eternal then
-                    chosen_joker.getting_sliced = true
-                    G.GAME.joker_buffer = G.GAME.joker_buffer - 1
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                        G.GAME.joker_buffer = 0
-                        chosen_joker:start_dissolve({HEX("7a5830")}, nil, 1.6)
-                        play_sound('slice1', 0.96+math.random()*0.08)
-                    return true end }))
-                end
-            end
-        end,
         calculate = function(self,card,context)
             if context.setting_blind and not context.blueprint then
                 local eval = function(card) return not card.REMOVED end
                 juice_card_until(card, eval, true)
+            end
+            if context.selling_self and not context.blueprint then 
+                local jokers = {}
+                for i=1, #G.jokers.cards do 
+                    if G.jokers.cards[i] ~= card then
+                        jokers[#jokers+1] = G.jokers.cards[i]
+                    end
+                end
+                if not from_debuff and #jokers > 0 then 
+                    card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
+                    local chosen_joker = ((G.jokers.cards[1]))
+                    if not chosen_joker.ability.eternal then
+                        chosen_joker.getting_sliced = true
+                        G.GAME.joker_buffer = G.GAME.joker_buffer - 1
+                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                            G.GAME.joker_buffer = 0
+                            chosen_joker:start_dissolve({HEX("7a5830")}, nil, 1.6)
+                            play_sound('slice1', 0.96+math.random()*0.08)
+                        return true end }))
+                    end
+                end
             end
         end
     })
@@ -841,7 +841,7 @@
         key = 'MechanicalJoker', atlas = 'tma_joker', pos = {x = 1, y = 2}, rarity = 3, cost = 8, blueprint_compat = true,
         calculate = function(self, card, context)
             for i = 1, #G.jokers.cards do
-                if G.jokers.cards[i] == self then
+                if G.jokers.cards[i] == card then
                     if context.retrigger_joker_check and not context.retrigger_joker and context.other_card.config.center.rarity == 1 and context.other_card ~= card and (context.other_card == G.joker.card[i+1] or context.other_card == G.joker.card[i-1]) then
                     return {
                       message = localize('k_again_ex'),

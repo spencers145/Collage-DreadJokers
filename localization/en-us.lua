@@ -234,7 +234,7 @@ return {
 				}
 			},
 			["j_tma_Archivist"] = {
-				["name"] = "Archivist",
+				["name"] = "Tape Recorder",
 				["text"] = {
 					"When {C:attention}Consumable{} is used,",
 					"adds {C:chips}Chips{} equal to {C:attention}four",
