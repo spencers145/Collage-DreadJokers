@@ -1363,5 +1363,59 @@
         return ret
     end
 
+    -- Statements
+
+    SMODS.UndiscoveredSprite({
+        key = 'Statement',
+        atlas = 'tma_tarot',
+        pos = {x = 0, y = 1},
+    })
+
+    SMODS.ConsumableType {
+        key = 'Statement',
+        primary_colour = HEX("5AC34D"),
+        secondary_colour = HEX("7BA85D"),
+        loc_txt = {
+            name = "Statement",
+            collection = "Statements",
+            undiscovered = {
+                name = 'Unknown Statement',
+                text = {
+                    'Find this tape in an unseeded',
+                    'run to find out what it does'
+                }
+            }
+        },
+        collection_rows = {5, 5},
+        shop_rate = 0.4
+    }
+    
+    -- Nightfall
+    SMODS.Consumable {
+        set = 'Statement', atlas = 'tma_tarot', key = 'nightfall',
+        pos = { x = 1, y = 1 },
+        config = {extra = {active = false}},
+        can_use = function(self, card)
+            return not card.ability.extra.active
+        end,
+        use = function(self, card, area, copier)
+            card.ability.extra.active = true
+            local eval = function(card) return card.ability.extra.active end
+            juice_card_until(card, eval, true)
+        end,
+        keep_on_use = function(self, card)
+            return true
+        end
+    }
+
+    -- Statement Ability
+
+    local calc_joker = Card.calculate_joker
+
+    function Card.calculate_joker(context)
+        
+        return calc_joker(self, context)
+    end
+
 ----------------------------------------------
 ------------MOD CODE END----------------------
