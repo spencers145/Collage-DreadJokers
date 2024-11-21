@@ -5,6 +5,9 @@ return {
 			["k_buried_ex"] = "Buried!",
 			["k_invalid_ex"] = "Invalid!",
 			["k_blam_ex"] = "Blam!",
+			["k_bonus"] = "Bonus!",
+			["k_end_ex"] = "Click!",
+			["k_mult"] = "Mult!",
 			["k_dig_ex"] = "Dig.",
 			["k_colony"] = "",
 			["Chips"] = "Chips",
@@ -53,6 +56,35 @@ return {
 					"by {C:attention}1{} level"
 				},
 			}
+		},
+		["Statement"] = {
+			["c_tma_nightfall"] = {
+				["name"] = "Nightfall",
+				["text"] = {
+					"When {C:attention}active{}, all played",
+					"{C:spades}Spade{} and {C:clubs}Club{} cards{} ",
+					"become {C:attention}Bonus{} cards",
+					"when scored"
+				},
+			},
+			["c_tma_burnout"] = {
+				["name"] = "Burnout",
+				["text"] = {
+					"When {C:attention}active{}, all played",
+					"{C:hearts}Heart{} and {C:diamonds}Diamond{} cards{} ",
+					"become {C:attention}Mult{} cards",
+					"when scored"
+				},
+			},
+			["c_tma_parity"] = {
+				["name"] = "Parity",
+				["text"] = {
+					"When {C:attention}active{}, scoring odd",
+					"cards give {C:chips}+#1#{} Chips",
+					"and scoring even cards",
+					"give {C:mult}+#2#{} Mult"
+				},
+			},
 		},
 		["Enhanced"] = {
 			["m_tma_rotting"] = {
@@ -275,9 +307,9 @@ return {
 			["j_tma_Fractal"] = {
 				["name"] = "Fractal",
 				["text"] = {
-					"{C:club}Club{} cards give",
+					"{C:clubs}Club{} cards give",
 					"{C:white,X:mult}X#1#{} Mult for each",
-					"scoring {C:club}Club{} card played."
+					"scoring {C:clubs}Club{} card played."
 				}
 			},
 			["j_tma_Mannequin"] = {
