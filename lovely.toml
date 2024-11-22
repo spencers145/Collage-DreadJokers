@@ -392,11 +392,8 @@ position = 'before'
 payload = '''
                 for k=1, #G.consumeables.cards do
                         --calculate the joker individual card effects
-                        local eval = G.consumeables.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, 
-                        poker_hands = poker_hands, other_card = scoring_hand[i], individual = true, callback = function(card, eval, retrigger)
-                        print("is this thing on?")
+                        local eval = G.consumeables.cards[k]:calculate_joker({cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], individual = true, callback = function(card, eval, retrigger)
                         if eval then 
-                            print("individual effects")
                             table.insert(effects, eval)
                         end
                     end

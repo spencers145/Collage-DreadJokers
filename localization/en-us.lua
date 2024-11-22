@@ -79,10 +79,34 @@ return {
 			["c_tma_parity"] = {
 				["name"] = "Parity",
 				["text"] = {
-					"When {C:attention}active{}, scoring odd",
-					"cards give {C:chips}+#1#{} Chips",
-					"and scoring even cards",
-					"give {C:mult}+#2#{} Mult"
+					"When {C:attention}active, {C:attention}odd{} cards",
+					"give {C:chips}+#1#{} Chips and",
+					"{C:attention}even{} cards give",
+					"{C:mult}+#2#{} Mult when scored."
+				},
+			},
+			["c_tma_wonderland"] = {
+				["name"] = "Wonderland",
+				["text"] = {
+					"When {C:attention}active{}, scoring",
+					"cards give {C:mult}Mult",
+					"equal to their rank",
+				},
+			},
+			["c_tma_precipice"] = {
+				["name"] = "Precipice",
+				["text"] = {
+					"When {C:attention}active{}, upgrades",
+					"all played {C:attention}poker hands"
+				},
+			},
+			["c_tma_mystery"] = {
+				["name"] = "Mystery",
+				["text"] = {
+					"When {C:attention}active{}, creates",
+					"a random {C:tarot}Tarot{}",
+					"card on discard",
+					"{C:inactive}(Must have Room)"
 				},
 			},
 		},
