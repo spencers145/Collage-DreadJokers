@@ -50,7 +50,7 @@ end
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 11'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))))'''
+payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))) or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
 
 # Queens as Magic ids
 [[patches]]
@@ -58,7 +58,7 @@ payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id()
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 12'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))))'''
+payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')))or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
 
 # Kings as Magic ids
 [[patches]]
@@ -66,7 +66,7 @@ payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id()
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 13'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 13 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 11) and next(find_joker('j_tma_Boneturner'))))'''
+payload = '''(context.other_card:get_id() == 13 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 11) and next(find_joker('j_tma_Boneturner')))or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
 
 # Idol Fix
 [[patches]]
@@ -75,7 +75,7 @@ target = 'card.lua'
 pattern = '''context.other_card:get_id() == G.GAME.current_round.idol_card.id'''
 match_indent = true
 position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.idol_card.id or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.idol_card.id == 11 or G.GAME.current_round.idol_card.id == 12 or G.GAME.current_round.idol_card.id == 13) ))'''
+payload = '''(context.other_card:get_id() == G.GAME.current_round.idol_card.id or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card") or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.idol_card.id == 11 or G.GAME.current_round.idol_card.id == 12 or G.GAME.current_round.idol_card.id == 13) ))'''
 
 # Mail Fix
 [[patches]]
@@ -84,7 +84,7 @@ target = 'card.lua'
 pattern = '''context.other_card:get_id() == G.GAME.current_round.mail_card.id'''
 match_indent = true
 position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.mail_card.id or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.mail_card.id == 11 or G.GAME.current_round.mail_card.id == 12 or G.GAME.current_round.mail_card.id == 13) ))'''
+payload = '''(context.other_card:get_id() == G.GAME.current_round.mail_card.id or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card") or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.mail_card.id == 11 or G.GAME.current_round.mail_card.id == 12 or G.GAME.current_round.mail_card.id == 13) ))'''
 
 # Wildfire
 [[patches]]
@@ -123,14 +123,32 @@ end'''
 # Lighthhouse
 [[patches]]
 [patches.pattern]
-target = 'blind.lua'
-pattern = '''if self.debuff.suit and card:is_suit(self.debuff.suit, true) then'''
+target = 'card.lua'
+pattern = '''if self.ability.perishable and self.ability.perish_tally <= 0 then'''
 match_indent = true
 position = 'before'
 payload = '''
-if next(SMODS.find_card('j_tma_Lighthouse')) and card.ability.effect ~= "Base" then
-    return card:set_debuff(false)
+if next(SMODS.find_card('j_tma_Lighthouse')) and self.ability.effect ~= "Base" then
+    self.debuff = false
+    return
 end
+'''
+
+# Preserve
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = '''if self.ability.perishable and self.ability.perish_tally <= 0 then'''
+match_indent = true
+position = 'before'
+payload = '''
+
+    for i=1, #G.consumeables.cards do
+        if G.consumeables.cards[i].ability.name == "c_tma_preserve" and G.consumeables.cards[i].ability.extra.active then
+            self.debuff = false
+            return
+        end
+    end
 '''
 
 # Last used Joker
@@ -142,6 +160,7 @@ match_indent = true
 position = 'before'
 payload = '''
 last_sold_joker = nil,
+morphIsActive = false,
 '''
 
 # Statements as Jokers, main effects

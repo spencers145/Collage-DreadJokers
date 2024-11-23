@@ -8,6 +8,7 @@ return {
 			["k_bonus"] = "Bonus!",
 			["k_end_ex"] = "Click!",
 			["k_mult"] = "Mult!",
+			["b_take"] = "TAKE",
 			["k_dig_ex"] = "Dig.",
 			["k_colony"] = "",
 			["Chips"] = "Chips",
@@ -107,6 +108,37 @@ return {
 					"a random {C:tarot}Tarot{}",
 					"card on discard",
 					"{C:inactive}(Must have Room)"
+				},
+			},
+			["c_tma_research"] = {
+				["name"] = "Research",
+				["text"] = {
+					"When {C:attention}active{},",
+					"retriggers all scoring",
+					"{C:attention}numbered{} cards"
+				},
+			},
+			["c_tma_preserve"] = {
+				["name"] = "Preserve",
+				["text"] = {
+					"When {C:attention}active{}, all cards",
+					"cannot be {C:attention}debuffed{}"
+				},
+			},
+			["c_tma_morph"] = {
+				["name"] = "Morph",
+				["text"] = {
+					"When {C:attention}active{}, {C:attention}Wild{}",
+					"cards are considered",
+					"as all {C:attention}ranks{}"
+				},
+			},
+			["c_tma_paradise"] = {
+				["name"] = "Paradise",
+				["text"] = {
+					"When {C:attention}active{}, {C:attention}Jokers{} and",
+					"{C:attention}Consumables{} in possession",
+					"gain {C:gold}$#1#{} Sell Value"
 				},
 			},
 		},
@@ -359,6 +391,40 @@ return {
 					"{C:mult}+#1#{} Mult each time",
 					"the {C:attention}Joker{} to",
 					"the left triggers",
+				}
+			},
+		},
+		["Other"] = {
+			["p_tma_audio_basic1"]	= {
+				["name"] = "Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_basic2"]	= {
+				["name"] = "Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_jumbo"]	= {
+				["name"] = "Jumbo Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_mega"]	= {
+				["name"] = "Mega Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
 				}
 			},
 		},
