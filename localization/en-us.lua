@@ -5,9 +5,16 @@ return {
 			["k_buried_ex"] = "Buried!",
 			["k_invalid_ex"] = "Invalid!",
 			["k_blam_ex"] = "Blam!",
+			["k_bonus"] = "Bonus!",
+			["k_end_ex"] = "Click!",
+			["k_mult"] = "Mult!",
+			["b_take"] = "TAKE",
 			["k_dig_ex"] = "Dig.",
 			["k_colony"] = "",
 			["Chips"] = "Chips",
+			['k_tma_audio_pack'] = 'Audio Pack',
+			['k_tma_audio_pack_2'] = 'Jumbo Audio Pack',
+			['k_tma_audio_pack_3'] = 'Mega Audio Pack',
 			},
 		["poker_hands"] = {
 			["dead"] = "Dead Man's Hand",
@@ -53,6 +60,99 @@ return {
 					"by {C:attention}1{} level"
 				},
 			}
+		},
+		["Statement"] = {
+			["c_tma_nightfall"] = {
+				["name"] = "Nightfall",
+				["text"] = {
+					"When {C:attention}active{}, all played",
+					"{C:spades}Spade{} and {C:clubs}Club{} cards{} ",
+					"become {C:attention}Bonus{} cards",
+					"when scored"
+				},
+			},
+			["c_tma_burnout"] = {
+				["name"] = "Burnout",
+				["text"] = {
+					"When {C:attention}active{}, all played",
+					"{C:hearts}Heart{} and {C:diamonds}Diamond{} cards{} ",
+					"become {C:attention}Mult{} cards",
+					"when scored"
+				},
+			},
+			["c_tma_parity"] = {
+				["name"] = "Parity",
+				["text"] = {
+					"When {C:attention}active, {C:attention}odd{} cards",
+					"give {C:chips}+#1#{} Chips and",
+					"{C:attention}even{} cards give",
+					"{C:mult}+#2#{} Mult when scored."
+				},
+			},
+			["c_tma_wonderland"] = {
+				["name"] = "Wonderland",
+				["text"] = {
+					"When {C:attention}active{}, scoring",
+					"cards give {C:mult}Mult",
+					"equal to their rank",
+				},
+			},
+			["c_tma_precipice"] = {
+				["name"] = "Precipice",
+				["text"] = {
+					"When {C:attention}active{}, upgrades",
+					"all played {C:attention}poker hands"
+				},
+			},
+			["c_tma_mystery"] = {
+				["name"] = "Mystery",
+				["text"] = {
+					"When {C:attention}active{}, creates",
+					"a random {C:tarot}Tarot{}",
+					"card on discard",
+					"{C:inactive}(Must have Room)"
+				},
+			},
+			["c_tma_research"] = {
+				["name"] = "Research",
+				["text"] = {
+					"When {C:attention}active{},",
+					"retriggers all scoring",
+					"{C:attention}numbered{} cards"
+				},
+			},
+			["c_tma_preserve"] = {
+				["name"] = "Preserve",
+				["text"] = {
+					"When {C:attention}active{}, all cards",
+					"cannot be {C:attention}debuffed{}"
+				},
+			},
+			["c_tma_morph"] = {
+				["name"] = "Morph",
+				["text"] = {
+					"When {C:attention}active{}, {C:attention}Wild{}",
+					"cards are considered",
+					"as all {C:attention}ranks{}"
+				},
+			},
+			["c_tma_paradise"] = {
+				["name"] = "Halcyon",
+				["text"] = {
+					"When {C:attention}active{}, {C:attention}Jokers{} and",
+					"{C:attention}Consumables{} in possession",
+					"gain {C:gold}$#1#{} Sell Value"
+				},
+			},
+			["c_tma_divinity"] = {
+				["name"] = "Divinity",
+				["text"] = {
+					"When {C:attention}active{}, {C:white,X:mult}X#1#{} Mult",
+					"for each round this card",
+					"was held in {C:attention}possession",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+				},
+			},
 		},
 		["Enhanced"] = {
 			["m_tma_rotting"] = {
@@ -269,15 +369,16 @@ return {
 				["name"] = "War Chant",
 				["text"] = {
 					"{C:mult}+#1#{} Mult if played",
-					"hand is first hand of round",
+					"hand is first", 
+					"hand of round",
 				}
 			},
 			["j_tma_Fractal"] = {
 				["name"] = "Fractal",
 				["text"] = {
-					"{C:club}Club{} cards give",
+					"{C:clubs}Club{} cards give",
 					"{C:white,X:mult}X#1#{} Mult for each",
-					"scoring {C:club}Club{} card played."
+					"scoring {C:clubs}Club{} card played."
 				}
 			},
 			["j_tma_Mannequin"] = {
@@ -285,7 +386,7 @@ return {
 				["text"] = {
 					"{C:attention}Sell{} this card to",
 					"create a copy of the",
-					"last removed Joker",
+					"last removed {C:attention}Joker",
 					"{s:0.8}Excluding {C:attention,s:0.8}Mannequin",
 					"{C:inactive}(Currently {C:attention}#1#{C:inactive})"
 				}
@@ -303,6 +404,44 @@ return {
 					"{C:mult}+#1#{} Mult each time",
 					"the {C:attention}Joker{} to",
 					"the left triggers",
+				}
+			},
+		},
+		["Other"] = {
+			["p_tma_audio_basic1"]	= {
+				["group_name"] = "Audio Pack",
+				["name"] = "Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_basic2"]	= {
+				["group_name"] = "Audio Pack",
+				["name"] = "Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_jumbo"]	= {
+				["group_name"] = "Audio Pack",
+				["name"] = "Jumbo Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
+				}
+			},
+			["p_tma_audio_mega"]	= {
+				["group_name"] = "Audio Pack",
+				["name"] = "Mega Audio Pack",
+				["text"] = {
+					"Choose {C:attention}#1#{} of up to",
+					"{C:attention}#2#{C:statement} Statement{} cards to",
+					"add to consumables"
 				}
 			},
 		},
