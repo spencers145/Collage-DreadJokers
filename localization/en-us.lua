@@ -373,7 +373,8 @@ return {
 				["text"] = {
 					"{C:attention}Sell{} this card to",
 					"create a copy of the",
-					"last removed Joker",
+					"last removed {C:attention}Joker",
+					"or {C:statement}Statement{}",
 					"{s:0.8}Excluding {C:attention,s:0.8}Mannequin",
 					"{C:inactive}(Currently {C:attention}#1#{C:inactive})"
 				}

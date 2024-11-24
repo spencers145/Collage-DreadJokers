@@ -50,7 +50,7 @@ end
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 11'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))) or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
+payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))) )'''
 
 # Queens as Magic ids
 [[patches]]
@@ -58,7 +58,7 @@ payload = '''(context.other_card:get_id() == 11 or ((context.other_card:get_id()
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 12'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')))or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
+payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner'))))'''
 
 # Kings as Magic ids
 [[patches]]
@@ -66,7 +66,7 @@ payload = '''(context.other_card:get_id() == 12 or ((context.other_card:get_id()
 target = 'card.lua'
 pattern = '''context\.other_card:get_id\(\) == 13'''
 position = 'at'
-payload = '''(context.other_card:get_id() == 13 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 11) and next(find_joker('j_tma_Boneturner')))or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card"))'''
+payload = '''(context.other_card:get_id() == 13 or ((context.other_card:get_id() == 12 or context.other_card:get_id() == 11) and next(find_joker('j_tma_Boneturner'))))'''
 
 # Idol Fix
 [[patches]]
@@ -75,7 +75,7 @@ target = 'card.lua'
 pattern = '''context.other_card:get_id() == G.GAME.current_round.idol_card.id'''
 match_indent = true
 position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.idol_card.id or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card") or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.idol_card.id == 11 or G.GAME.current_round.idol_card.id == 12 or G.GAME.current_round.idol_card.id == 13) ))'''
+payload = '''(context.other_card:get_id() == G.GAME.current_round.idol_card.id or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.idol_card.id == 11 or G.GAME.current_round.idol_card.id == 12 or G.GAME.current_round.idol_card.id == 13) ))'''
 
 # Mail Fix
 [[patches]]
@@ -84,7 +84,86 @@ target = 'card.lua'
 pattern = '''context.other_card:get_id() == G.GAME.current_round.mail_card.id'''
 match_indent = true
 position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.mail_card.id or (G.GAME.morphIsActive and context.other_card.ability.effect == "Wild Card") or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.mail_card.id == 11 or G.GAME.current_round.mail_card.id == 12 or G.GAME.current_round.mail_card.id == 13) ))'''
+payload = '''(context.other_card:get_id() == G.GAME.current_round.mail_card.id  or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.mail_card.id == 11 or G.GAME.current_round.mail_card.id == 12 or G.GAME.current_round.mail_card.id == 13) ))'''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''context\.other_card:get_id\(\) == '''
+position = 'at'
+match_indent = true
+payload = ''' ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.other_card.ability.effect == "Wild Card") or context.other_card:get_id() == '''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''context\.other_card:get_id\(\) == [\w\d\s][\w\d\s]'''
+position = 'after'
+match_indent = true
+payload = ''' )'''
+
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''G\.GAME\.current_round\.mail_card\.id'''
+position = 'after'
+match_indent = true
+payload = ''' )'''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''G\.GAME\.current_round\.idol_card\.id'''
+position = 'after'
+match_indent = true
+payload = ''' )'''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''and \(pseudorandom\(\'8ball\'\)'''
+position = 'before'
+match_indent = true
+payload = ''' )'''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''\(\(next\(SMODS\.find_card\('c_tma_morph'\)\) and SMODS\.find_card\('c_tma_morph'\)\[1\]\.ability\.extra\.active and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 5\)'''
+position = 'after'
+match_indent = true
+payload = ''' )'''
+
+# All rank wild rank
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''\(\(next\(SMODS\.find_card\('c_tma_morph'\)\) and SMODS\.find_card\('c_tma_morph'\)\[1\]\.ability\.extra\.active and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 10 \) or  \(\(next\(SMODS\.find_card\('c_tma_morph'\)\) and SMODS\.find_card\('c_tma_morph'\)\[1\]\.ability\.extra\.active and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 4\)'''
+position = 'after'
+match_indent = true
+payload = ''' )'''
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''next\(find_joker\(\"Pareidolia\"\)\)'''
+position = 'at'
+match_indent = true
+payload = ''' (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active) or next(find_joker("Pareidolia")) '''
+
+[[patches]]
+[patches.regex]
+target = 'card.lua'
+pattern = '''context\.full_hand\[1\]\:get_id\(\) == 6'''
+position = 'at'
+match_indent = true
+payload = ''' ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.full_hand[1].ability.effect == "Wild Card") or context.full_hand[1]:get_id() == 6)'''
 
 # Wildfire
 [[patches]]

@@ -76,6 +76,8 @@
                     if v.ability.name == 'j_tma_Mannequin' and self.ability.name ~= 'j_tma_Mannequin' then 
                         v.ability.extra.last_sold = self
                     end
+                end
+                if self.ability.set == "Joker" or self.ability.set == "Statement" then 
                     G.GAME.last_sold_joker = self
                 end
             end
@@ -104,18 +106,21 @@
         for i=1, #hand do
             local id = hand[i]:get_id()
             if id > 1 and id < 15 then
-                if IDS[id] then
-                    IDS[id][#IDS[id]+1] = hand[i]
-                else
-                    IDS[id] = {hand[i]}
-                end
                 if hand[i].ability.effect == "Wild Card" and not hand[i].ability.debuff and wildrank then
                     if wildIDS[id] then
                         wildIDS[id][#wildIDS[id]+1] = hand[i]
                         wilds = wilds + 1
+                        print("Wilds", wilds)
                     else
                         wildIDS[id] = {hand[i]}
                         wilds = wilds + 1
+                        print("Wilds", wilds)
+                    end
+                else
+                    if IDS[id] then
+                        IDS[id][#IDS[id]+1] = hand[i]
+                    else
+                        IDS[id] = {hand[i]}
                     end
                 end
             end
@@ -129,10 +134,6 @@
         if IDS[j == 1 and 14 or j] then
             straight_length = straight_length + 1
             skipped_rank = false
-            if wildIDS[j] and (#IDS[j] == 1) then
-                templatewilds = templatewilds-1
-                print(templatewilds)
-            end
             for k, v in ipairs(IDS[j == 1 and 14 or j] or {}) do
                 t[#t+1] = v
             end
@@ -142,15 +143,12 @@
             for k, v in ipairs(IDS[j == 1 and 14 or j] or {}) do
                 t[#t+1] = v
             end
-        elseif templatewilds > 0 then
+        elseif can_skip and not skipped_rank and j ~= 14 then
+            skipped_rank = true
+        elseif templatewilds > 0 and straight_length > 0 then
             straight_length = straight_length + 1
             skipped_rank = false
             templatewilds = templatewilds -1
-            for k, v in ipairs(IDS[j == 1 and 14 or j] or {}) do
-                t[#t+1] = v
-            end
-        elseif can_skip and not skipped_rank and j ~= 14 then
-            skipped_rank = true
         else
             straight_length = 0
             templatewilds = wilds
@@ -158,7 +156,16 @@
             if not straight then t = {} end
             if straight then break end
             end
-            if straight_length >= (5 - (four_fingers and 1 or 0)) then straight = true end 
+            if straight_length >= (5 - (four_fingers and 1 or 0) - templatewilds) then straight = true end 
+        end
+        if straight then
+            for j = 1, 14 do
+                if wildIDS[j == 1 and 14 or j] then
+                    for k, v in ipairs(wildIDS[j == 1 and 14 or j] or {}) do
+                        t[#t+1] = v
+                    end
+                end
+            end
         end
         if not straight then return ret end
         table.insert(ret, t)
@@ -670,7 +677,6 @@
                         card = card,
                     }
                 else
-                    print("test!")
                     return {
                         card = card,
                         chips = card.ability.extra.bonus_chips
@@ -1125,35 +1131,55 @@
         end,
         calculate = function(self,card,context)
             if context.selling_self and not context.blueprint then  
-                local jokers = {}
-                for i=1, #G.jokers.cards do 
-                    if G.jokers.cards[i] ~= card then
-                        jokers[#jokers+1] = G.jokers.cards[i]
+                if card.ability.extra.last_sold ~= nil and card.ability.extra.last_sold.ability.name ~= nil then
+                    if card.ability.extra.last_sold.ability.set == "Joker" then
+                        if #G.jokers.cards <= G.jokers.config.card_limit then 
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
+                            local new_card = copy_card(card.ability.extra.last_sold, nil, nil, nil, card.ability.extra.last_sold.edition and card.ability.extra.last_sold.edition.negative)
+                            new_card:start_materialize()
+                            new_card:add_to_deck()
+                            G.jokers:emplace(new_card)
+                        else
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
+                        end
+                    elseif card.ability.extra.last_sold.ability.set == "Statement" then
+                        if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then 
+                            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
+                            local new_card = copy_card(card.ability.extra.last_sold, nil, nil, nil, card.ability.extra.last_sold.edition and card.ability.extra.last_sold.edition.negative)
+                            new_card:start_materialize()
+                            new_card:add_to_deck()
+                            G.consumeables:emplace(new_card)
+                        else
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
+                        end
                     end
-                end
-                if #jokers > 0 then 
-                    if #G.jokers.cards <= G.jokers.config.card_limit then 
-                        if (card.ability.extra.last_sold ~= nil and card.ability.extra.last_sold.ability.name ~= nil) then
-                        card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
-                        local new_card = copy_card(card.ability.extra.last_sold, nil, nil, nil, card.ability.extra.last_sold.edition and card.ability.extra.last_sold.edition.negative)
-                        new_card:start_materialize()
-                        new_card:add_to_deck()
-                        G.jokers:emplace(new_card)
-                        elseif G.GAME.last_sold_joker ~= nil and G.GAME.last_sold_joker.ability.name ~= nil then
+                elseif G.GAME.last_sold_joker ~= nil and G.GAME.last_sold_joker.ability.name ~= nil then
+                    if G.GAME.last_sold_joker.ability.set == "Joker" then
+                        if #G.jokers.cards <= G.jokers.config.card_limit then 
                             card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
                             local new_card = copy_card(G.GAME.last_sold_joker, nil, nil, nil, G.GAME.last_sold_joker.edition and G.GAME.last_sold_joker.edition.negative)
                             new_card:start_materialize()
                             new_card:add_to_deck()
                             G.jokers:emplace(new_card)
+                        else
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
                         end
-
-                    else
-                        card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
+                    elseif G.GAME.last_sold_joker.ability.set == "Statement" then
+                        if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then 
+                            G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_duplicated_ex')})
+                            local new_card = copy_card(G.GAME.last_sold_joker, nil, nil, nil,G.GAME.last_sold_joker.edition and G.GAME.last_sold_joker.edition.negative)
+                            new_card:start_materialize()
+                            new_card:add_to_deck()
+                            G.consumeables:emplace(new_card)
+                        else
+                            card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize('k_no_room_ex')})
+                        end
                     end
-                else
+                end
             end
         end
-    end
     })
 
     -- DeepBlue
@@ -1557,7 +1583,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.before then
+            if context.before and card.ability.extra.active then
                 local darks = {}
                 for k, v in ipairs(context.scoring_hand) do
                     if v:is_suit('Spades') or v:is_suit('Clubs') then 
@@ -1580,7 +1606,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
             end
@@ -1609,7 +1635,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.before then
+            if context.before and card.ability.extra.active then
                 local lights = {}
                 for k, v in ipairs(context.scoring_hand) do
                     if v:is_suit('Hearts') or v:is_suit('Diamonds') then 
@@ -1632,7 +1658,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
             end
@@ -1666,7 +1692,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.individual and context.cardarea == G.play then
+            if context.individual and context.cardarea == G.play and card.ability.extra.active then
                 if context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 0 then
                     return {
                         mult = card.ability.extra.mult, card = card
@@ -1682,7 +1708,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
             end
@@ -1712,7 +1738,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.individual then
+            if context.individual and card.ability.extra.active then
                     if context.other_card.effect ~= 'Stone Card' then
                     return {
                         mult = context.other_card.base.nominal
@@ -1724,7 +1750,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -1752,7 +1778,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.before and context.cardarea == G.consumeables then
+            if context.before and context.cardarea == G.consumeables and card.ability.extra.active then
                 return {
                     card = card,
                     level_up = true,
@@ -1764,7 +1790,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -1792,7 +1818,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.discard then
+            if context.discard and card.ability.extra.active then
                 if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                     G.E_MANAGER:add_event(Event({
@@ -1813,7 +1839,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -1853,7 +1879,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -1882,7 +1908,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.repetition and context.cardarea == G.play then
+            if context.repetition and context.cardarea == G.play and card.ability.extra.active then
                 if context.other_card:get_id() >=2 and context.other_card:get_id() <= 14 and (context.other_card:get_id() ~= 11 or context.other_card:get_id() ~= 12 or context.other_card:get_id() ~= 13) then
                     return {
                         message = localize('k_again_ex'),
@@ -1896,7 +1922,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -1936,7 +1962,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
@@ -2010,7 +2036,7 @@
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     G.GAME.consumeable_buffer = 0
-                    play_sound('tma_statement2', 1.1, 0.8)
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
                 end
