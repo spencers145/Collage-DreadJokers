@@ -724,7 +724,7 @@
                     Xmult_mod = card.ability.x_mult
                 }
             end
-            if context.destroying_card and not context.blueprint and (context.full_hand[1].base.value == card.ability.extra.rank or ((context.full_hand[i].base.value == 'Jack' or context.full_hand[i].base.value == 'Queen' or context.full_hand[i].base.value == 'King') and next(find_joker('j_tma_Boneturner')) and card.ability.extra.rank == 'Jack' or card.ability.extra.rank == 'Queen' or card.ability.extra.rank == 'King')) and #context.full_hand == 1 then
+            if context.destroying_card and not context.blueprint and (context.full_hand[1].base.value == card.ability.extra.rank or ((context.full_hand[i].base.value == 'Jack' or context.full_hand[i].base.value == 'Queen' or context.full_hand[i].base.value == 'King') and next(find_joker('j_tma_Boneturner')) and card.ability.extra.rank == 'Jack' or card.ability.extra.rank == 'Queen' or card.ability.extra.rank == 'King') or (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.full_hand[1].ability.effect == "Wild Card")) and #context.full_hand == 1 then
                 local playcard = context.full_hand[1]
                 card.ability.x_mult = card.ability.x_mult + card.ability.extra.bonus_mult
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.x_mult}}, colour = G.C.RED, card = card})
@@ -1226,6 +1226,7 @@
                 end
                 if context.other_joker == other_joker then
                     card.ability.extra.triggers = card.ability.extra.triggers + 1
+                    card:juice_up()
                     return nil
                 end
             end
@@ -1394,9 +1395,9 @@
         local ace_black = 0
         local eight_black = 0
         for i = 1, #hand do
-            if hand[i]:get_id() == 14 and (hand[i]:is_suit("Spades", nil, true) or hand[i]:is_suit("Clubs", nil, true)) then
+            if ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and  hand[i].ability.effect == "Wild Card") or hand[i]:get_id() == 14) and (hand[i]:is_suit("Spades", nil, true) or hand[i]:is_suit("Clubs", nil, true)) then
                 ace_black = ace_black+1
-            elseif hand[i]:get_id() == 8 and (hand[i]:is_suit("Spades", nil, true) or hand[i]:is_suit("Clubs", nil, true)) then
+            elseif ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and hand[i].ability.effect == "Wild Card") or hand[i]:get_id() == 8) then
                 eight_black = eight_black+1
             end
         end
@@ -1481,7 +1482,7 @@
                 }
             }
         },
-        collection_rows = {5, 5},
+        collection_rows = {4, 5},
         shop_rate = 0.4
     }
     SMODS.Booster{
@@ -1539,7 +1540,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack",
+        group_key = "k_tma_audio_pack2",
     }
     SMODS.Booster{
         key = 'audio_mega',
@@ -1558,7 +1559,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack",
+        group_key = "k_tma_audio_pack3",
     }
     -- Nightfall
     SMODS.Consumable {
@@ -1693,11 +1694,11 @@
         end,
         calculate = function(self, card, context)
             if context.individual and context.cardarea == G.play and card.ability.extra.active then
-                if context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 0 then
+                if context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 0 or (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.other_card.ability.effect == "Wild Card") then
                     return {
                         mult = card.ability.extra.mult, card = card
                     }
-                elseif ((context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 1) or (context.other_card:get_id() == 14)) then
+                elseif ((context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 1) or (context.other_card:get_id() == 14) or ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.other_card.ability.effect == "Wild Card"))) then
                     return {
                         chips = card.ability.extra.chips, card = card
                     }
@@ -2040,6 +2041,57 @@
                     card:start_dissolve()
                 return true end }))
                 end
+        end
+    }
+    SMODS.Consumable {
+        set = 'Statement', atlas = 'tma_tarot', key = 'divinity',
+        pos = { x = 1, y = 2 },
+        cost = 4,
+        config = {extra = {active = false, xmult = 1, xmult_mod = 1, xmult_mod_real = 0.2}},
+        can_use = function(self, card)
+            return not card.ability.extra.active
+        end,
+        loc_vars = function(self, info_queue, card)
+            return {vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
+        end,
+        use = function(self, card, area, copier)
+            card.ability.extra.active = true
+            play_sound('tma_statement1', 1.1 + math.random()*0.1, 0.8)
+            local eval = function(card) return card.ability.extra.active end
+            juice_card_until(card, eval, true)
+        end,
+        load = function(self,card,card_table,other_card)
+            local eval = function(card) return card.ability.extra.active end
+            juice_card_until(card, eval, true)
+        end,
+        keep_on_use = function(self, card)
+            return true
+        end,
+        calculate = function(self, card, context)
+            if context.end_of_round and not card.getting_sliced and card.ability.extra.active then
+                card.getting_sliced = true
+                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
+                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                    G.GAME.consumeable_buffer = 0
+                    play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
+                    card:start_dissolve()
+                return true end }))
+                end
+                if context.end_of_round and not card.ability.extra.active and not card.getting_sliced and not context.blueprint then
+                    card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod_real
+                    return {
+                        message = localize('k_upgrade_ex'),
+                        card = card,
+                        colour = G.C.MULT
+                    }
+                end
+            if SMODS.end_calculate_context(context) and card.ability.extra.xmult > 1 and card.ability.extra.active then
+                return {
+                    message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
+                    colour = G.C.RED,
+                    Xmult_mod = card.ability.extra.xmult
+                }
+            end
         end
     }
     G.FUNCS.can_reserve_card = function(e)

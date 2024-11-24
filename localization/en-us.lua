@@ -12,6 +12,9 @@ return {
 			["k_dig_ex"] = "Dig.",
 			["k_colony"] = "",
 			["Chips"] = "Chips",
+			['k_tma_audio_pack'] = 'Audio Pack',
+			['k_tma_audio_pack_2'] = 'Jumbo Audio Pack',
+			['k_tma_audio_pack_3'] = 'Mega Audio Pack',
 			},
 		["poker_hands"] = {
 			["dead"] = "Dead Man's Hand",
@@ -134,11 +137,20 @@ return {
 				},
 			},
 			["c_tma_paradise"] = {
-				["name"] = "Paradise",
+				["name"] = "Halcyon",
 				["text"] = {
 					"When {C:attention}active{}, {C:attention}Jokers{} and",
 					"{C:attention}Consumables{} in possession",
 					"gain {C:gold}$#1#{} Sell Value"
+				},
+			},
+			["c_tma_divinity"] = {
+				["name"] = "Divinity",
+				["text"] = {
+					"When {C:attention}active{}, {C:white,X:mult}X#1#{} Mult",
+					"for each round this card",
+					"was held in {C:attention}possession",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
 				},
 			},
 		},
@@ -374,7 +386,6 @@ return {
 					"{C:attention}Sell{} this card to",
 					"create a copy of the",
 					"last removed {C:attention}Joker",
-					"or {C:statement}Statement{}",
 					"{s:0.8}Excluding {C:attention,s:0.8}Mannequin",
 					"{C:inactive}(Currently {C:attention}#1#{C:inactive})"
 				}
@@ -397,6 +408,7 @@ return {
 		},
 		["Other"] = {
 			["p_tma_audio_basic1"]	= {
+				["group_name"] = "Audio Pack",
 				["name"] = "Audio Pack",
 				["text"] = {
 					"Choose {C:attention}#1#{} of up to",
@@ -405,6 +417,7 @@ return {
 				}
 			},
 			["p_tma_audio_basic2"]	= {
+				["group_name"] = "Audio Pack",
 				["name"] = "Audio Pack",
 				["text"] = {
 					"Choose {C:attention}#1#{} of up to",
@@ -413,6 +426,7 @@ return {
 				}
 			},
 			["p_tma_audio_jumbo"]	= {
+				["group_name"] = "Audio Pack",
 				["name"] = "Jumbo Audio Pack",
 				["text"] = {
 					"Choose {C:attention}#1#{} of up to",
@@ -421,6 +435,7 @@ return {
 				}
 			},
 			["p_tma_audio_mega"]	= {
+				["group_name"] = "Audio Pack",
 				["name"] = "Mega Audio Pack",
 				["text"] = {
 					"Choose {C:attention}#1#{} of up to",
