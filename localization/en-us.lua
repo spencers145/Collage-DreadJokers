@@ -369,7 +369,8 @@ return {
 				["name"] = "War Chant",
 				["text"] = {
 					"{C:mult}+#1#{} Mult if played",
-					"hand is first hand of round",
+					"hand is first", 
+					"hand of round",
 				}
 			},
 			["j_tma_Fractal"] = {

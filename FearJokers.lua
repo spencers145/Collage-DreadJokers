@@ -2047,7 +2047,7 @@
         set = 'Statement', atlas = 'tma_tarot', key = 'divinity',
         pos = { x = 1, y = 2 },
         cost = 4,
-        config = {extra = {active = false, xmult = 1, xmult_mod = 1, xmult_mod_real = 0.2}},
+        config = {extra = {active = false, xmult = 1, xmult_mod = 1, xmult_mod_real = 0.25}},
         can_use = function(self, card)
             return not card.ability.extra.active
         end,
