@@ -49,7 +49,14 @@ return {
 					"{C:attention} perishable{} copy",
 					"of a random {C:attention}Joker"
 				},
-			}
+			},
+			["c_tma_compulsion"] = {
+				["name"] = "Compulsion",
+				["text"] = {
+					"When {C:attention}active{},",
+					"retriggers all {C:attention}Jokers",
+				},
+			},
 		},
 		["Planet"] = {
 			["c_tma_colony"] = {
@@ -118,7 +125,7 @@ return {
 				["text"] = {
 					"When {C:attention}active{},",
 					"retriggers all scoring",
-					"{C:attention}numbered{} cards"
+					"{C:attention}numbered{} cards12312341234"
 				},
 			},
 			["c_tma_preserve"] = {
@@ -139,9 +146,8 @@ return {
 			["c_tma_paradise"] = {
 				["name"] = "Halcyon",
 				["text"] = {
-					"When {C:attention}active{}, {C:attention}Jokers{} and",
-					"{C:attention}Consumables{} in possession",
-					"gain {C:gold}$#1#{} Sell Value"
+					"When {C:attention}active{}, doubles",
+					"all {C:money}Dollars{} gained"
 				},
 			},
 			["c_tma_divinity"] = {
@@ -151,6 +157,29 @@ return {
 					"for each round this card",
 					"was held in {C:attention}possession",
 					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+				},
+			},
+			["c_tma_indulgence"] = {
+				["name"] = "Indulgence",
+				["text"] = {
+					"When {C:attention}active{}, spend {C:money}$#1#",
+					"to {C:red}discard{} hand if",
+					"no discards remaining"
+				},
+			},
+			["c_tma_glimmer"] = {
+				["name"] = "Glimmer",
+				["text"] = {
+					"When {C:attention}active{}, all {C:attention}Jokers",
+					"gain a random {C:attention}Edition",
+					"this Blind."
+				},
+			},
+			["c_tma_static"] = {
+				["name"] = "Static",
+				["text"] = {
+					"When {C:attention}active{}, gain",
+					"{C:attention}+#1#{} Hand Size",
 				},
 			},
 		},
@@ -336,18 +365,18 @@ return {
 			["j_tma_Archivist"] = {
 				["name"] = "Tape Recorder",
 				["text"] = {
-					"At end of round, adds {C:gold}$#2#{} of sell",
-					"value to held {C:attention}Consumable{} cards.",
-					"When {C:attention}Consumable{} is used, gains",
-					"{C:chips}Chips{} equal to {C:attention}4X{} sell value",
+					"At end of round, gains {C:chips}Chips{}",
+					"equal to {C:attention}4X{} sell value of each",
+					"{C:attention}Consumable{} in possession",
 					"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
 				}
 			},
 			["j_tma_Heartbeat"] = {
 				["name"] = "Pulse",
 				["text"] = {
-					"{C:attention}Retriggers{} every",
-					"other {C:heart}Heart{} card",
+					"{C:attention}Retriggers{} all",
+					"played {C:heart}Heart{} cards",
+					"when scored"
 				}
 			},
 			["j_tma_LostCity"] = {
@@ -369,7 +398,7 @@ return {
 				["name"] = "War Chant",
 				["text"] = {
 					"{C:mult}+#1#{} Mult if played",
-					"hand is first", 
+					"hand is first",
 					"hand of round",
 				}
 			},
@@ -387,6 +416,7 @@ return {
 					"{C:attention}Sell{} this card to",
 					"create a copy of the",
 					"last removed {C:attention}Joker",
+					"or {C:statement}Statement",
 					"{s:0.8}Excluding {C:attention,s:0.8}Mannequin",
 					"{C:inactive}(Currently {C:attention}#1#{C:inactive})"
 				}

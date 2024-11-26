@@ -169,7 +169,7 @@ payload = ''' ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = '''if destroyed then'''
+pattern = '''if scoring_hand[i].ability.name == 'Glass Card' and not scoring_hand[i].debuff and pseudorandom('glass') < G.GAME.probabilities.normal/scoring_hand[i].ability.extra then'''
 position = 'before'
 match_indent = true
 payload = '''
@@ -496,4 +496,82 @@ payload = '''
                         end
                     end
 
+'''
+
+# Statements as Jokers, 
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''local effects = eval_card(G.jokers.cards[i], {cardarea = G.jokers, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true})'''
+match_indent = true
+position = 'at'
+payload = '''
+local effects = eval_card(G.jokers.cards[i], {cardarea = G.jokers, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true, callback = function(card, ret) effects = {jokers = ret}
+        if effects.jokers then
+            card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
+            percent = percent + percent_delta
+        end
+    end
+
+    }) end
+for i=1, #G.consumeables.cards do
+        --calculate the joker after hand played effects
+        local effects = eval_card(G.consumeables.cards[i], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true, callback = function(card, ret) effects = {jokers = ret}
+
+'''
+
+# Statements as Jokers, 
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''local glass_shattered = {}'''
+match_indent = true
+position = 'after'
+payload = '''
+destroyed = true
+        for j=1, #G.consumeables.cards do
+            eval_card(G.consumeables.cards[j], {cardarea = G.consumeables, remove_playing_cards = true, removed = cards_destroyed})
+        end
+        for i=1, #G.play.cards do
+            local destroyed = nil
+
+            for j = 1, #G.consumeables.cards do
+                destroyed = G.consumeables.cards[j]:calculate_joker({destroying_card_full = G.play.cards[i], full_hand = G.play.cards, scoring_hand = scoring_hand, callback = function(card, ret) if ret then destroyed=true end end})
+            end
+            if destroyed then 
+                if G.play.cards[i].ability.name == 'Glass Card' then 
+                    G.play.cards[i].shattered = true
+                else 
+                    G.play.cards[i].destroyed = true
+                end 
+                cards_destroyed[#cards_destroyed+1] = scoring_hand[i]
+            end
+        end
+        for j=1, #G.jokers.cards do
+            eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
+        end
+        for j=1, #G.consumeables.cards do
+            eval_card(G.consumeables.cards[j], {cardarea = G.consumeables, remove_playing_cards = true, removed = cards_destroyed})
+        end
+'''
+
+# Indulgence discards
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+pattern = '''ease_discard(-1)'''
+match_indent = true
+position = 'at'
+payload = '''
+        local freediscard = false
+        for i=1, #G.consumeables.cards do
+            if G.consumeables.cards[i].ability.name == "c_tma_indulgence" and G.consumeables.cards[i].ability.extra.active and G.GAME.current_round.discards_left <= 0 then
+                ease_dollars(-G.consumeables.cards[i].ability.extra.cost)
+                freediscard = true
+                break
+            end
+        end
+        if not freediscard then
+            ease_discard(-1)
+        end
 '''
