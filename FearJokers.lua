@@ -1479,7 +1479,7 @@
                 }
             }
         },
-        collection_rows = {4, 5},
+        collection_rows = {5, 6},
         shop_rate = 0.4
     }
     SMODS.Booster{
