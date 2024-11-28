@@ -81,14 +81,15 @@
                     G.GAME.last_sold_joker = self
                 end
             end
-            if self.ability.extra.active and  self.ability.name == "c_tma_static" then
-                G.hand:change_size(-self.ability.extra.h_size)
-            elseif self.ability.extra.active and  self.ability.name == "c_tma_glimmer" then
-                G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                for k, v in ipairs(self.ability.extra.enhancedjokers) do
-                    v:set_edition(nil, true)
+            if self.ability.set == "Statement" then
+                if self.ability.extra.active and self.ability.name == "c_tma_glimmer" then
+                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
+                    for k, v in ipairs(self.ability.extra.enhancedjokers) do
+                        v:set_edition(nil, true)
+                    end
+                    return true end }))
                 end
-                return true end }))
+                
             end
         end
         return card_remove_deck(self, from_debuff)
@@ -838,7 +839,7 @@
             }
         },
         calculate = function(self,card,context)
-            if context.setting_blind then
+            if context.first_hand_drawn then
                 if not card.ability.extra.active then
                     card.ability.extra.active = true
                     local eval = function() return card.ability.extra.active end
@@ -1054,7 +1055,7 @@
             }
         end,
         calculate = function(self,card,context)
-            if context.setting_blind then
+            if context.first_hand_drawn then
                 if not card.ability.extra.active then
                     card.ability.extra.active = true
                     local eval = function() return card.ability.extra.active end
@@ -1479,8 +1480,8 @@
                 }
             }
         },
-        collection_rows = {5, 6},
-        shop_rate = 0.4
+        collection_rows = {5, 5, 5},
+        shop_rate = 0.5
     }
     SMODS.Booster{
         key = 'audio_basic1',
@@ -1537,7 +1538,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack2",
+        group_key = "k_tma_audio_pack",
     }
     SMODS.Booster{
         key = 'audio_mega',
@@ -1556,7 +1557,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack3",
+        group_key = "k_tma_audio_pack",
     }
     -- Nightfall
     SMODS.Consumable {
@@ -2139,7 +2140,7 @@
         set = 'Statement', atlas = 'tma_tarot', key = 'static',
         pos = { x = 4, y = 2 },
         cost = 4,
-        config = {extra = {active = false, h_size = 5}},
+        config = {extra = {active = false, cards_to_hand = {}}},
         can_use = function(self, card)
             return not card.ability.extra.active
         end,
@@ -2147,7 +2148,6 @@
             return {vars = {card.ability.extra.h_size}}
         end,
         use = function(self, card, area, copier)
-            G.hand:change_size(card.ability.extra.h_size)
             card.ability.extra.active = true
             play_sound('tma_statement1', 1.1 + math.random()*0.1, 0.8)
             local eval = function(card) return card.ability.extra.active end
@@ -2161,6 +2161,9 @@
             return true
         end,
         calculate = function(self, card, context)
+            if context.joker_main and context.scoring_hand then
+                card.ability.extra.cards_to_hand = context.scoring_hand
+            end
             if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
                 card.getting_sliced = true
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
@@ -2194,16 +2197,8 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.destroying_card_full and card.ability.extra.active and not context.repetition and not context.individual then
-                local found = false
-                for i = 1, #context.scoring_hand do
-                    if context.scoring_hand[i] == context.destroying_card_full then
-                        found = true
-                    end
-                end
-                if not found then
-                    return true
-                end
+            if context.destroying_card and card.ability.extra.active and not context.repetition and not context.individual then
+                return true
             end
             if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
                 card.getting_sliced = true
