@@ -10,7 +10,6 @@ return {
 			["k_mult"] = "Mult!",
 			["b_take"] = "TAKE",
 			["k_dig_ex"] = "Dig.",
-			["k_colony"] = "",
 			["Chips"] = "Chips",
 			['k_tma_audio_pack'] = 'Audio Pack',
 			},
@@ -176,8 +175,9 @@ return {
 			["c_tma_static"] = {
 				["name"] = "Static",
 				["text"] = {
-					"When {C:attention}active{}, gain",
-					"{C:attention}+#1#{} Hand Size",
+					"When {C:attention}active{}, all scoring",
+					"cards return to {C:attention}hand{}",
+					"after being played."
 				},
 			},
 			["c_tma_exhaustion"] = {
