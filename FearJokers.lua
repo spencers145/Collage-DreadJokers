@@ -1537,7 +1537,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack2",
+        group_key = "k_tma_audio_pack",
     }
     SMODS.Booster{
         key = 'audio_mega',
@@ -1556,7 +1556,7 @@
         create_card = function(self, card)
             return create_card("Statement", G.pack_cards, nil, nil, true, true, nil, "tma_audio")
         end,
-        group_key = "k_tma_audio_pack3",
+        group_key = "k_tma_audio_pack",
     }
     -- Nightfall
     SMODS.Consumable {
@@ -2194,16 +2194,8 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.destroying_card_full and card.ability.extra.active and not context.repetition and not context.individual then
-                local found = false
-                for i = 1, #context.scoring_hand do
-                    if context.scoring_hand[i] == context.destroying_card_full then
-                        found = true
-                    end
-                end
-                if not found then
-                    return true
-                end
+            if context.destroying_card and card.ability.extra.active and not context.repetition and not context.individual then
+                return true
             end
             if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
                 card.getting_sliced = true

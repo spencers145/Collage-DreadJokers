@@ -13,8 +13,6 @@ return {
 			["k_colony"] = "",
 			["Chips"] = "Chips",
 			['k_tma_audio_pack'] = 'Audio Pack',
-			['k_tma_audio_pack_2'] = 'Jumbo Audio Pack',
-			['k_tma_audio_pack_3'] = 'Mega Audio Pack',
 			},
 		["poker_hands"] = {
 			["dead"] = "Dead Man's Hand",
@@ -125,7 +123,7 @@ return {
 				["text"] = {
 					"When {C:attention}active{},",
 					"retriggers all scoring",
-					"{C:attention}numbered{} cards12312341234"
+					"{C:attention}numbered{} cards"
 				},
 			},
 			["c_tma_preserve"] = {
@@ -180,6 +178,13 @@ return {
 				["text"] = {
 					"When {C:attention}active{}, gain",
 					"{C:attention}+#1#{} Hand Size",
+				},
+			},
+			["c_tma_exhaustion"] = {
+				["name"] = "Exhaustion",
+				["text"] = {
+					"When {C:attention}active{}, destroys",
+					"all cards in {C:attention}Scoring Hand",
 				},
 			},
 		},

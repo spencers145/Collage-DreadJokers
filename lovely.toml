@@ -524,35 +524,14 @@ for i=1, #G.consumeables.cards do
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = '''local glass_shattered = {}'''
+pattern = '''destroyed = G.jokers.cards[j]:calculate_joker({destroying_card = scoring_hand[i], full_hand = G.play.cards})'''
 match_indent = true
 position = 'after'
 payload = '''
-destroyed = true
-        for j=1, #G.consumeables.cards do
-            eval_card(G.consumeables.cards[j], {cardarea = G.consumeables, remove_playing_cards = true, removed = cards_destroyed})
-        end
-        for i=1, #G.play.cards do
-            local destroyed = nil
-
+                if destroyed then break end
+            end
             for j = 1, #G.consumeables.cards do
-                destroyed = G.consumeables.cards[j]:calculate_joker({destroying_card_full = G.play.cards[i], full_hand = G.play.cards, scoring_hand = scoring_hand, callback = function(card, ret) if ret then destroyed=true end end})
-            end
-            if destroyed then 
-                if G.play.cards[i].ability.name == 'Glass Card' then 
-                    G.play.cards[i].shattered = true
-                else 
-                    G.play.cards[i].destroyed = true
-                end 
-                cards_destroyed[#cards_destroyed+1] = scoring_hand[i]
-            end
-        end
-        for j=1, #G.jokers.cards do
-            eval_card(G.jokers.cards[j], {cardarea = G.jokers, remove_playing_cards = true, removed = cards_destroyed})
-        end
-        for j=1, #G.consumeables.cards do
-            eval_card(G.consumeables.cards[j], {cardarea = G.consumeables, remove_playing_cards = true, removed = cards_destroyed})
-        end
+                destroyed = G.consumeables.cards[j]:calculate_joker({destroying_card = scoring_hand[i], full_hand = G.play.cards, callback = function(card, ret) if ret then destroyed=true end end})
 '''
 
 # Indulgence discards
