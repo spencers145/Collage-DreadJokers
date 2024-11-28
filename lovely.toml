@@ -458,7 +458,25 @@ target = 'functions/common_events.lua'
 pattern = '''if context.cardarea == G.jokers or context.card == G.consumeables then'''
 match_indent = true
 position = 'at'
-payload = '''if context.cardarea == G.jokers or context.card == G.consumeables or context.cardarea == G.consumeables then
+payload = '''
+
+    if card.edition and card.edition.key then
+        local ed = SMODS.Centers[card.edition.key]
+        if ed.calculate and type(ed.calculate) == 'function' then
+            context.from_playing_card = true
+            ed:calculate(card, context)
+            context.from_playing_card = nil
+        end
+    end
+    if not enhancement_calculated and card.ability.set == 'Enhanced' and center.calculate and type(center.calculate) == 'function' then 
+        center:calculate(card, context, ret)
+        enhancement_calculated = true
+    end
+    local seals = card:calculate_seal(context)
+    if seals then
+        ret.seals = seals
+    end
+    if context.cardarea == G.jokers or context.cardarea == G.consumeables then
 
 '''
 
