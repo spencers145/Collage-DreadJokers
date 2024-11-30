@@ -475,7 +475,7 @@
                 end
                 return
             end
-            if SMODS.end_calculate_context(context) and card.ability.mult_mod > 0 then
+            if context.joker_main and card.ability.mult_mod > 0 then
                 return {
                     message = localize{type='variable',key='a_mult',vars={card.ability.mult_mod}},
                     mult_mod = card.ability.mult_mod
@@ -498,7 +498,7 @@
             }
         end,
         calculate = function(self,card,context)
-            if SMODS.end_calculate_context(context) and #G.deck.cards == 0 then
+            if context.joker_main and #G.deck.cards == 0 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.woah_x_mult}},
                     Xmult_mod = card.ability.woah_x_mult
@@ -519,7 +519,7 @@
             return {vars = {card.ability.extra.cool_x_mult, (G.GAME.starting_deck_size or 52)/2}}
         end,
         calculate = function(self,card,context)
-            if SMODS.end_calculate_context(context) and ((G.GAME.starting_deck_size)/2 - #G.playing_cards) > 0 then
+            if context.joker_main and ((G.GAME.starting_deck_size)/2 - #G.playing_cards) > 0 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
                     Xmult_mod = card.ability.extra.cool_x_mult
@@ -543,7 +543,7 @@
             return {vars = {card.ability.extra.chips_mod, spectrals_used*card.ability.extra.chips_mod}}
         end,
         calculate = function(self,card,context)
-            if SMODS.end_calculate_context(context) then
+            if context.joker_main then
                 local spectrals_used = 0
                 for k, v in pairs(G.GAME.consumeable_usage) do if v.set == 'Spectral' then spectrals_used = spectrals_used + 1 end end
                 if spectrals_used > 0 then
@@ -609,7 +609,7 @@
                     card = card
                 }
             end
-            if SMODS.end_calculate_context(context) and card.ability.mult_mod > 0 then
+            if context.joker_main and card.ability.mult_mod > 0 then
                 return {
                     message = localize{type='variable',key='a_mult',vars={card.ability.mult_mod}},
                     mult_mod = card.ability.mult_mod
@@ -738,7 +738,7 @@
                 end
                 card.ability.extra.rank = pseudorandom_element(ranks_in_deck, pseudoseed('mrspider')).base.value
             end
-            if SMODS.end_calculate_context(context) and card.ability.x_mult > 1 then
+            if context.joker_main and card.ability.x_mult > 1 then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.x_mult}},
                     Xmult_mod = card.ability.x_mult
@@ -962,7 +962,7 @@
                 end
                 card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}}}); return true
             end
-            if SMODS.end_calculate_context(context) then
+            if context.joker_main then
                 return {
                     message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}},
                     chips_mod = card.ability.extra.chips
@@ -1062,7 +1062,7 @@
                     juice_card_until(card, eval, true)
                 end
             end
-            if SMODS.end_calculate_context(context) and card.ability.extra.active then
+            if context.joker_main and card.ability.extra.active then
                 card.ability.extra.active = false
                 return {
                     message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult_stuff}},
@@ -1228,7 +1228,7 @@
                     return nil
                 end
             end
-            if SMODS.end_calculate_context(context) and card.ability.extra.triggers > 0 then
+            if context.joker_main and card.ability.extra.triggers > 0 then
                 local trigs = card.ability.extra.triggers or 0
                 card.ability.extra.triggers = 0
                 return {
@@ -1908,7 +1908,7 @@
         end,
         calculate = function(self, card, context)
             if context.repetition and context.cardarea == G.play and card.ability.extra.active then
-                if context.other_card:get_id() >=2 and context.other_card:get_id() <= 14 and (context.other_card:get_id() ~= 11 or context.other_card:get_id() ~= 12 or context.other_card:get_id() ~= 13) then
+                if context.other_card:get_id() >=2 and context.other_card:get_id() <= 10 then
                     return {
                         message = localize('k_again_ex'),
                         repetitions = card.ability.extra.repetitions,
@@ -2042,7 +2042,7 @@
                     colour = G.C.MULT
                 }
                 end
-            if SMODS.end_calculate_context(context) and card.ability.extra.xmult > 1 and card.ability.extra.active then
+            if context.joker_main and card.ability.extra.xmult > 1 and card.ability.extra.active then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
                     colour = G.C.RED,
