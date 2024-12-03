@@ -544,29 +544,6 @@ payload = '''
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
-pattern = '''local effects = eval_card(G.jokers.cards[i], {cardarea = G.jokers, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true})'''
-match_indent = true
-position = 'at'
-payload = '''
-local effects = eval_card(G.jokers.cards[i], {cardarea = G.jokers, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true, callback = function(card, ret) effects = {jokers = ret}
-        if effects.jokers then
-            card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
-            percent = percent + percent_delta
-        end
-    end
-
-    }) end
-    if G.consumeables then
-for i=1, #G.consumeables.cards do
-        --calculate the joker after hand played effects
-        local effects = eval_card(G.consumeables.cards[i], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true, callback = function(card, ret) effects = {jokers = ret}
-end
-'''
-
-# Statements as Jokers, 
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
 pattern = '''destroyed = G.jokers.cards[j]:calculate_joker({destroying_card = scoring_hand[i], full_hand = G.play.cards})'''
 match_indent = true
 position = 'after'
