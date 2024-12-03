@@ -307,9 +307,9 @@ return {
 			["j_tma_Extinction"] = {
 				["name"] = "The Extinction",
 				["text"] = {
-					"{X:mult,C:white}X#1#{} Mult if your",
-					"full deck has less",
-					"than {C:attention}#2#{} cards"
+					"{X:mult,C:white}X#1#{} Mult for each",
+					"missing rank in your deck.",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
 				}
 			},
 			["j_tma_Piper"] = {
@@ -411,7 +411,7 @@ return {
 				["name"] = "Fractal",
 				["text"] = {
 					"{C:clubs}Club{} cards give",
-					"{C:white,X:mult}X#1#{} Mult for each",
+					"{C:chips}+#1#{} Chips for each",
 					"scoring {C:clubs}Club{} card played."
 				}
 			},

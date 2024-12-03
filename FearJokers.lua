@@ -518,16 +518,25 @@
         key = 'Extinction', atlas = 'tma_joker', pos = {x = 4, y = 1}, rarity = 1, cost = 3, blueprint_compat = true, 
         config = {
             extra = {
-                cool_x_mult = 5
+                cool_x_mult = 0.5, ranks = {},
             }
         },
         loc_vars = function(self,info_queue,card)
-            return {vars = {card.ability.extra.cool_x_mult, (G.GAME.starting_deck_size or 52)/2}}
+            return {vars = {card.ability.extra.cool_x_mult, 1+card.ability.extra.cool_x_mult*(13 - #card.ability.extra.ranks)} }
+        end,
+        update = function(self, card, dt)
+            card.ability.extra.ranks = {}
+            if G.STAGE == G.STAGES.RUN then
+                for k, v in pairs(G.playing_cards) do
+                    if not card.ability.extra.ranks[v:get_id()] then card.ability.extra.ranks[v:get_id()] = 1 end
+                end
+                
+            end
         end,
         calculate = function(self,card,context)
-            if context.joker_main and ((G.GAME.starting_deck_size)/2 - #G.playing_cards) > 0 then
+            if context.joker_main and (13 - #card.ability.extra.ranks) > 0 then
                 return {
-                    message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
+                    message = localize{type='variable',key='a_xmult',vars={1+card.ability.extra.cool_x_mult*(13 - #card.ability.extra.ranks)}},
                     Xmult_mod = card.ability.extra.cool_x_mult
                 }
             end
@@ -1082,13 +1091,13 @@
     SMODS.Joker({
         key = 'Fractal', atlas = 'tma_joker', pos = {x = 7, y = 2}, rarity = 2, cost = 6, blueprint_compat = true,
         config = {
-            extra = {
-                xmult_per = 0.1
+            extra = { 
+                chips_per = 15
             }
         },
         loc_vars = function(self, info_queue, card)
             return {
-                vars = {card.ability.extra.xmult_per}
+                vars = {card.ability.extra.chips_per}
             }
         end,
         calculate = function(self,card,context)
@@ -1099,9 +1108,9 @@
                         clubs = clubs + 1
                     end
                 end
-                local total_xmult = 1 + card.ability.extra.xmult_per*clubs
+                local total_chips = card.ability.extra.chips_per*clubs
                 return {
-                    x_mult = total_xmult,
+                    chips = total_chips,
                     card = card
                 }
             end
@@ -1213,7 +1222,7 @@
         key = 'Marionette', atlas = 'tma_joker', pos = {x = 0, y = 3}, rarity = 1, cost = 6, blueprint_compat = true,
         config = {
             extra = {
-                mult_mod = 5,
+                mult_mod = 4,
                 triggers = 0,
             }
         },
@@ -1230,8 +1239,10 @@
                 end
                 if context.other_joker == other_joker then
                     card.ability.extra.triggers = card.ability.extra.triggers + 1
-                    card:juice_up()
-                    return nil
+                    return {
+                        message = localize('k_upgrade_ex'),
+                        card = card
+                    }
                 end
             end
             if context.joker_main and card.ability.extra.triggers > 0 then
