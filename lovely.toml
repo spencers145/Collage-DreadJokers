@@ -145,11 +145,10 @@ payload = ''' )'''
 [[patches]]
 [patches.regex]
 target = 'card.lua'
-pattern = '''and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 4\)'''
+pattern = '''\(\(next\(SMODS\.find_card\('c_tma_morph'\)\) and SMODS\.find_card\('c_tma_morph'\)\[1\]\.ability\.extra\.active and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 10 \) or  \(\(next\(SMODS\.find_card\('c_tma_morph'\)\) and SMODS\.find_card\('c_tma_morph'\)\[1\]\.ability\.extra\.active and context\.other_card\.ability\.effect == "Wild Card"\) or context\.other_card:get_id\(\) == 4\)'''
 position = 'after'
 match_indent = true
 payload = ''' )'''
-
 [[patches]]
 [patches.regex]
 target = 'card.lua'
@@ -256,8 +255,8 @@ payload = '''
             for i=1, #G.consumeables.cards do
             local _card = G.consumeables.cards[i]
             --calculate the consumeable effects
-            if _card then
             local effects = eval_card(_card, {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, joker_main = true, callback = function(_card, ret) effects = {jokers = ret}
+
             --Any Joker effects
             if effects.jokers then 
                 local extras = {mult = false, hand_chips = false}
@@ -267,7 +266,7 @@ payload = '''
                 update_hand_text({delay = 0}, {chips = extras.hand_chips and hand_chips, mult = extras.mult and mult})
                 card_eval_status_text(_card, 'jokers', nil, percent, nil, effects.jokers)
                 percent = percent+percent_delta
-            end
+                end
 
             --Joker on Joker effects
             for _, v in ipairs(G.consumeables.cards) do
@@ -282,7 +281,6 @@ payload = '''
                     percent = percent+percent_delta
                 end
             end})
-            end
             end
             end
             end
@@ -315,8 +313,8 @@ position = 'before'
 payload = '''
         if G.consumeables then
         for c=1, #G.consumeables.cards do
+        print("context.before!")
             --calculate the joker effects
-            if G.consumeables.cards[c] then
             local effects = eval_card(G.consumeables.cards[c], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, before = true, callback = function(card, ret) effects = {jokers = ret}
             if effects.jokers then
                 card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
@@ -326,7 +324,6 @@ payload = '''
                 end
             end
             end})
-            end
         end
         end
 '''
@@ -343,12 +340,10 @@ position = 'before'
 payload = '''
         if G.consumeables then
         for c=1, #G.consumeables.cards do
-        if G.consumeables.cards[c] then
         local effects = eval_card(G.consumeables.cards[c], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true})
         if effects.jokers then
             card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
             percent = percent + percent_delta
-        end
         end
     end
     end
@@ -448,13 +443,11 @@ payload = '''
             if G.consumeables then
                 for c=1, #G.consumeables.cards do
                     --calculate the joker effects
-                    if G.consumeables.cards[c] then
                     local eval = eval_card(G.consumeables.cards[c], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], repetition = true, callback = function(card, ret) eval = {jokers = ret}
                     if next(eval) and eval.jokers then 
                         for h = 1, eval.jokers.repetitions do
                             reps[#reps+1] = eval
                         end
-                    end
                     end
                 end
             end
@@ -477,34 +470,6 @@ pattern = '''local _card = G.jokers.cards[i] or G.consumeables.cards[i - #G.joke
 match_indent = true
 position = 'at'
 payload = '''local _card = G.jokers.cards[i]
-
-'''
-# Statements as Jokers, common event
-[[patches]]
-[patches.pattern]
-target = 'functions/common_events.lua'
-pattern = '''if context.cardarea == G.jokers or context.card == G.consumeables then'''
-match_indent = true
-position = 'at'
-payload = '''
-
-    if card.edition and card.edition.key then
-        local ed = SMODS.Centers[card.edition.key]
-        if ed.calculate and type(ed.calculate) == 'function' then
-            context.from_playing_card = true
-            ed:calculate(card, context)
-            context.from_playing_card = nil
-        end
-    end
-    if not enhancement_calculated and card.ability.set == 'Enhanced' and center.calculate and type(center.calculate) == 'function' then 
-        center:calculate(card, context, ret)
-        enhancement_calculated = true
-    end
-    local seals = card:calculate_seal(context)
-    if seals then
-        ret.seals = seals
-    end
-    if context.cardarea == G.jokers or context.cardarea == G.consumeables then
 
 '''
 

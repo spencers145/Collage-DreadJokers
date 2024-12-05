@@ -7,6 +7,7 @@
 --- BADGE_COLOR: 56A786
 --- VERSION: 1.1.1
 --- DEPENDENCIES: [Talisman>=2.0.0-beta5]
+--- CONFLICTS: [CheesyJokers]
 
 ----------------------------------------------
 ------------MOD CODE -------------------------
@@ -320,6 +321,27 @@
         return referencedollars(mod, instant)
     end
 
+    local referenceeval = eval_card
+    function eval_card(card, context)
+        local ret=referenceeval(card,context)
+        local jokers = nil
+        if context.cardarea == G.consumeables then
+            print("context before")
+        if context.edition then
+            jokers = card:get_edition(context)
+        elseif context.other_joker then
+            jokers = context.other_joker:calculate_joker(context)
+        else
+            print("calculating card")
+            jokers = card:calculate_joker(context)
+        end
+        if jokers then 
+            ret.jokers = jokers
+        end
+    end
+    return ret
+    end
+
     --NowhereToGo
     SMODS.Joker({
         key = 'NowhereToGo', atlas = 'tma_joker', pos = {x = 0, y = 0}, rarity = 2, cost = 7, blueprint_compat = true, 
@@ -518,25 +540,16 @@
         key = 'Extinction', atlas = 'tma_joker', pos = {x = 4, y = 1}, rarity = 1, cost = 3, blueprint_compat = true, 
         config = {
             extra = {
-                cool_x_mult = 0.5, ranks = {},
+                cool_x_mult = 5
             }
         },
         loc_vars = function(self,info_queue,card)
-            return {vars = {card.ability.extra.cool_x_mult, 1+card.ability.extra.cool_x_mult*(13 - #card.ability.extra.ranks)} }
-        end,
-        update = function(self, card, dt)
-            card.ability.extra.ranks = {}
-            if G.STAGE == G.STAGES.RUN then
-                for k, v in pairs(G.playing_cards) do
-                    if not card.ability.extra.ranks[v:get_id()] then card.ability.extra.ranks[v:get_id()] = 1 end
-                end
-                
-            end
+            return {vars = {card.ability.extra.cool_x_mult, (G.GAME.starting_deck_size or 52)/2}}
         end,
         calculate = function(self,card,context)
-            if context.joker_main and (13 - #card.ability.extra.ranks) > 0 then
+            if context.joker_main and ((G.GAME.starting_deck_size)/2 - #G.playing_cards) > 0 then
                 return {
-                    message = localize{type='variable',key='a_xmult',vars={1+card.ability.extra.cool_x_mult*(13 - #card.ability.extra.ranks)}},
+                    message = localize{type='variable',key='a_xmult',vars={card.ability.extra.cool_x_mult}},
                     Xmult_mod = card.ability.extra.cool_x_mult
                 }
             end
@@ -1091,13 +1104,13 @@
     SMODS.Joker({
         key = 'Fractal', atlas = 'tma_joker', pos = {x = 7, y = 2}, rarity = 2, cost = 6, blueprint_compat = true,
         config = {
-            extra = { 
-                chips_per = 15
+            extra = {
+                xmult_per = 0.1
             }
         },
         loc_vars = function(self, info_queue, card)
             return {
-                vars = {card.ability.extra.chips_per}
+                vars = {card.ability.extra.xmult_per}
             }
         end,
         calculate = function(self,card,context)
@@ -1108,9 +1121,9 @@
                         clubs = clubs + 1
                     end
                 end
-                local total_chips = card.ability.extra.chips_per*clubs
+                local total_xmult = 1 + card.ability.extra.xmult_per*clubs
                 return {
-                    chips = total_chips,
+                    x_mult = total_xmult,
                     card = card
                 }
             end
@@ -1222,7 +1235,7 @@
         key = 'Marionette', atlas = 'tma_joker', pos = {x = 0, y = 3}, rarity = 1, cost = 6, blueprint_compat = true,
         config = {
             extra = {
-                mult_mod = 4,
+                mult_mod = 5,
                 triggers = 0,
             }
         },
@@ -1239,10 +1252,8 @@
                 end
                 if context.other_joker == other_joker then
                     card.ability.extra.triggers = card.ability.extra.triggers + 1
-                    return {
-                        message = localize('k_upgrade_ex'),
-                        card = card
-                    }
+                    card:juice_up()
+                    return nil
                 end
             end
             if context.joker_main and card.ability.extra.triggers > 0 then
@@ -1599,6 +1610,10 @@
             return true
         end,
         calculate = function(self, card, context)
+            print("hmm")
+            if context.before then 
+                print("Testtt")
+            end
             if context.before and card.ability.extra.active then
                 local darks = {}
                 for k, v in ipairs(context.scoring_hand) do
