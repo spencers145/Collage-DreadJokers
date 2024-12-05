@@ -256,8 +256,8 @@ payload = '''
             for i=1, #G.consumeables.cards do
             local _card = G.consumeables.cards[i]
             --calculate the consumeable effects
+            if _card then
             local effects = eval_card(_card, {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, joker_main = true, callback = function(_card, ret) effects = {jokers = ret}
-
             --Any Joker effects
             if effects.jokers then 
                 local extras = {mult = false, hand_chips = false}
@@ -282,6 +282,7 @@ payload = '''
                     percent = percent+percent_delta
                 end
             end})
+            end
             end
             end
             end
@@ -315,6 +316,7 @@ payload = '''
         if G.consumeables then
         for c=1, #G.consumeables.cards do
             --calculate the joker effects
+            if G.consumeables.cards[c] then
             local effects = eval_card(G.consumeables.cards[c], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, before = true, callback = function(card, ret) effects = {jokers = ret}
             if effects.jokers then
                 card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
@@ -324,6 +326,7 @@ payload = '''
                 end
             end
             end})
+            end
         end
         end
 '''
@@ -340,10 +343,12 @@ position = 'before'
 payload = '''
         if G.consumeables then
         for c=1, #G.consumeables.cards do
+        if G.consumeables.cards[c] then
         local effects = eval_card(G.consumeables.cards[c], {cardarea = G.consumeables, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, after = true})
         if effects.jokers then
             card_eval_status_text(card, 'jokers', nil, percent, nil, effects.jokers)
             percent = percent + percent_delta
+        end
         end
     end
     end
@@ -443,11 +448,13 @@ payload = '''
             if G.consumeables then
                 for c=1, #G.consumeables.cards do
                     --calculate the joker effects
+                    if G.consumeables.cards[c] then
                     local eval = eval_card(G.consumeables.cards[c], {cardarea = G.play, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands, other_card = scoring_hand[i], repetition = true, callback = function(card, ret) eval = {jokers = ret}
                     if next(eval) and eval.jokers then 
                         for h = 1, eval.jokers.repetitions do
                             reps[#reps+1] = eval
                         end
+                    end
                     end
                 end
             end
