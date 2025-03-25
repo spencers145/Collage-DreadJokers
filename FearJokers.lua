@@ -1591,11 +1591,10 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
-        end,
-        can_use = function(self, card)
             if G.STATE == G.STATES.SELECTING_HAND then
-                return true
+                return not card.ability.extra.active
+            else
+                return false
             end
         end,
         use = function(self, card, area, copier)
@@ -1652,7 +1651,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1708,7 +1711,11 @@
         cost = 4,
         config = {extra = {active = false, chips = 31, mult = 4}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self,info_queue,card)
             return {
@@ -1759,7 +1766,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1799,7 +1810,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1839,7 +1854,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1889,7 +1908,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1929,7 +1952,11 @@
         cost = 4,
         config = {extra = {active = false, repetitions = 1}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -1972,7 +1999,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -2011,7 +2042,11 @@
             return {vars = {card.ability.extra.gold}}
         end,
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -2044,7 +2079,11 @@
         cost = 4,
         config = {extra = {active = false, xmult = 1, xmult_mod = 0.5}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self, info_queue, card)
             return {vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
@@ -2095,7 +2134,11 @@
         cost = 4,
         config = {extra = {active = false, cost = 6}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self, info_queue, card)
             return {vars = {card.ability.extra.cost}}
@@ -2131,7 +2174,11 @@
         cost = 4,
         config = {extra = {active = false, enhancedjokers = {}}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self, info_queue, card)
             return {vars = {card.ability.extra.cost}}
@@ -2180,7 +2227,11 @@
         cost = 4,
         config = {extra = {active = false, cards_to_hand = {}}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self, info_queue, card)
             return {vars = {card.ability.extra.h_size}}
@@ -2219,7 +2270,11 @@
         cost = 4,
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
@@ -2255,7 +2310,11 @@
         cost = 4, soul_set = "Statement",
         config = {extra = {active = false}},
         can_use = function(self, card)
-            return not card.ability.extra.active
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return not card.ability.extra.active
+            else
+                return false
+            end
         end,
         loc_vars = function(self, info_queue, card)
             return {vars = {card.ability.extra.cost}}
@@ -2274,7 +2333,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.retrigger_joker_check and not context.retrigger_joker then
+            if context.retrigger_joker_check and card.ability.extra.active and not context.retrigger_joker then
                 return {
                     message = localize('k_again_ex'),
                     repetitions = 1,
