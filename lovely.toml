@@ -280,8 +280,8 @@ payload = '''
                     if extras.mult or extras.hand_chips then card_eval_status_text(v, 'jokers', nil, percent, nil, effect) end
                     percent = percent+percent_delta
                 end
-            end})
             end
+            end})
             end
             end
 '''
