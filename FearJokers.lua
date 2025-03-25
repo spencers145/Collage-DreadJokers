@@ -54,7 +54,6 @@
             return true
         end}))
     end
-
     -- Adding Jokers
     local card_add_deck = Card.add_to_deck
     function Card:add_to_deck(from_debuff)
@@ -323,23 +322,21 @@
 
     local referenceeval = eval_card
     function eval_card(card, context)
-        local ret=referenceeval(card,context)
+        local ret, post_trigger = referenceeval(card,context)
         local jokers = nil
         if context.cardarea == G.consumeables then
-            print("context before")
-        if context.edition then
-            jokers = card:get_edition(context)
-        elseif context.other_joker then
-            jokers = context.other_joker:calculate_joker(context)
-        else
-            print("calculating card")
-            jokers = card:calculate_joker(context)
+            if context.edition then
+                jokers = card:get_edition(context)
+            elseif context.other_joker then
+                jokers = context.other_joker:calculate_joker(context)
+            else
+                jokers = card:calculate_joker(context)
+            end
+            if jokers then 
+                ret.jokers = jokers
+            end
         end
-        if jokers then 
-            ret.jokers = jokers
-        end
-    end
-    return ret
+    return ret, post_trigger
     end
 
     --NowhereToGo
@@ -1596,6 +1593,11 @@
         can_use = function(self, card)
             return not card.ability.extra.active
         end,
+        can_use = function(self, card)
+            if G.STATE == G.STATES.SELECTING_HAND then
+                return true
+            end
+        end,
         use = function(self, card, area, copier)
             card.ability.extra.active = true
             play_sound('tma_statement1', 1.1 + math.random()*0.1, 0.8)
@@ -1610,11 +1612,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            print("hmm")
-            if context.before then 
-                print("Testtt")
-            end
-            if context.before and card.ability.extra.active then
+            if context.before and card.ability.extra.active and not context.blueprint and not context.repetition then
                 local darks = {}
                 for k, v in ipairs(context.scoring_hand) do
                     if v:is_suit('Spades') or v:is_suit('Clubs') then 
@@ -1629,7 +1627,11 @@
                     end
                 end
                 if #darks > 0 then 
-                    card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_bonus'), colour = G.C.CHIPS, card = card})
+                    return {
+                        message = localize('k_bonus'),
+                        colour = G.C.CHIPS,
+                        card = card
+                    }
                 end
             end
             if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
@@ -1666,7 +1668,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.before and card.ability.extra.active then
+            if context.before and card.ability.extra.active and not context.blueprint and not context.repetition then
                 local lights = {}
                 for k, v in ipairs(context.scoring_hand) do
                     if v:is_suit('Hearts') or v:is_suit('Diamonds') then 
@@ -1681,7 +1683,11 @@
                     end
                 end
                 if #lights > 0 then 
-                    card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_mult'), colour = G.C.MULT, card = card})
+                    return {
+                        message = localize('k_mult'),
+                        colour = G.C.MULT,
+                        card = card
+                    }
                 end
             end
             if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
@@ -1723,14 +1729,14 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.individual and context.cardarea == G.play and card.ability.extra.active then
+            if context.individual and context.cardarea == G.play and card.ability.extra.active and not context.repetition then
                 if context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 0 or (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.other_card.ability.effect == "Wild Card") then
                     return {
-                        mult = card.ability.extra.mult, card = card
+                        mult = card.ability.extra.mult
                     }
                 elseif ((context.other_card:get_id() <= 10 and context.other_card:get_id() >= 0 and context.other_card:get_id()%2 == 1) or (context.other_card:get_id() == 14) or ((next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.other_card.ability.effect == "Wild Card"))) then
                     return {
-                        chips = card.ability.extra.chips, card = card
+                        chips = card.ability.extra.chips
                     }
                 end
             end
@@ -1769,7 +1775,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.individual and card.ability.extra.active then
+            if context.individual and card.ability.extra.active and context.cardarea == G.play and not context.repetition then
                     if context.other_card.effect ~= 'Stone Card' then
                     return {
                         mult = context.other_card.base.nominal
@@ -1809,14 +1815,14 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.before and context.cardarea == G.consumeables and card.ability.extra.active then
+            if context.before and context.cardarea == G.consumeables and card.ability.extra.active and not context.repetition then
                 return {
                     card = card,
                     level_up = true,
                     message = localize('k_level_up_ex')
                 }
             end
-            if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
+            if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active and not context.blueprint then
                 card.getting_sliced = true
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
@@ -1849,7 +1855,7 @@
             return true
         end,
         calculate = function(self, card, context)
-            if context.discard and card.ability.extra.active then
+            if context.discard and card.ability.extra.active and not context.repetition then
                 if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                     G.E_MANAGER:add_event(Event({
@@ -1865,7 +1871,7 @@
                     card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_plus_tarot'), colour = G.C.PURPLE})
                 end
             end
-            if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active then
+            if context.end_of_round and not context.repetition and not context.individual and not card.getting_sliced and card.ability.extra.active and not context.blueprint then
                 card.getting_sliced = true
                 G.GAME.consumeable_buffer = G.GAME.consumeable_buffer - 1
                 G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
@@ -2036,7 +2042,7 @@
         set = 'Statement', atlas = 'tma_tarot', key = 'divinity',
         pos = { x = 1, y = 2 },
         cost = 4,
-        config = {extra = {active = false, xmult = 1, xmult_mod = 1}},
+        config = {extra = {active = false, xmult = 1, xmult_mod = 0.5}},
         can_use = function(self, card)
             return not card.ability.extra.active
         end,
@@ -2377,7 +2383,7 @@
 	end
         if not indulgence then return GCanDiscard(e) end
         if G.GAME.current_round.discards_left <= 0 or #G.hand.highlighted <= 0 then 
-            if (G.GAME.dollars >= indulgence.ability.extra.cost) and not (#G.hand.highlighted <= 0) then
+            if (to_big(G.GAME.dollars + (G.GAME.dollar_buffer or 0)) >= indulgence.ability.extra.cost) and not (#G.hand.highlighted <= 0) then
                 e.config.colour = G.C.MONEY
                 e.config.button = 'discard_cards_from_highlighted'
             else
