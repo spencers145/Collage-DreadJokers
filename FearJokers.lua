@@ -733,12 +733,13 @@
 
     -- Mr Spider
     SMODS.Joker({
-        key = 'MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 2, cost = 7, blueprint_compat = true, perishable_compat = false,
+        key = 'MrSpider', atlas = 'tma_joker', pos = {x = 2, y = 1}, rarity = 3, cost = 7, blueprint_compat = true, perishable_compat = false,
         config = {
             x_mult = 1,
             extra = {
-                bonus_mult = 0.25,
-                rank = 'Jack'
+                bonus_mult = 0.2,
+                rank = 'Jack',
+                active = true
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -769,7 +770,7 @@
                     Xmult_mod = card.ability.x_mult
                 }
             end
-            if context.destroying_card and not context.blueprint and (context.full_hand[1].base.value == card.ability.extra.rank or ((context.full_hand[1].base.value == 'Jack' or context.full_hand[1].base.value == 'Queen' or context.full_hand[1].base.value == 'King') and next(find_joker('j_tma_Boneturner')) and card.ability.extra.rank == 'Jack' or card.ability.extra.rank == 'Queen' or card.ability.extra.rank == 'King') or (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.full_hand[1].ability.effect == "Wild Card")) and #context.full_hand == 1 then
+            if card.ability.extra.active and context.destroying_card and not context.blueprint and (context.full_hand[1].base.value == card.ability.extra.rank or ((context.full_hand[1].base.value == 'Jack' or context.full_hand[1].base.value == 'Queen' or context.full_hand[1].base.value == 'King') and next(find_joker('j_tma_Boneturner')) and card.ability.extra.rank == 'Jack' or card.ability.extra.rank == 'Queen' or card.ability.extra.rank == 'King') or (next(SMODS.find_card('c_tma_morph')) and SMODS.find_card('c_tma_morph')[1].ability.extra.active and context.full_hand[1].ability.effect == "Wild Card")) and #context.full_hand == 1 and G.GAME.current_round.hands_played == 0 then
                 local playcard = context.full_hand[1]
                 card.ability.x_mult = card.ability.x_mult + card.ability.extra.bonus_mult
                 card_eval_status_text(context.blueprint_card or card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_xmult', vars = {card.ability.x_mult}}, colour = G.C.RED, card = card})
@@ -789,8 +790,7 @@
         key = 'Coffin', atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 1, cost = 1, blueprint_compat = false, eternal_compat = false,
         config = {
             extra = {
-                dollars = 20,
-                my_pos = nil
+                dollars = 20
             }
         },
         loc_vars = function(self,info_queue,card)
@@ -811,27 +811,40 @@
                 juice_card_until(card, eval, true)
             end
             if context.selling_self and not context.blueprint then 
-                local jokers = {}
-                for i=1, #G.jokers.cards do 
-                    if G.jokers.cards[i] ~= card then
-                        jokers[#jokers+1] = G.jokers.cards[i]
-                    end
+                local my_pos = nil
+                for i = 1, #G.jokers.cards do
+                    if G.jokers.cards[i] == self then my_pos = i; break end
                 end
-                if not from_debuff and #jokers > 0 then 
+                if my_pos and G.jokers.cards[my_pos+1] and not card.getting_sliced and not G.jokers.cards[my_pos+1].ability.eternal and not G.jokers.cards[my_pos+1].getting_sliced then 
+                    local sliced_card = G.jokers.cards[my_pos+1]
+                    sliced_card.getting_sliced = true
+                    G.GAME.joker_buffer = G.GAME.joker_buffer - 1
+                    G.E_MANAGER:add_event(Event({func = function()
+                        G.GAME.joker_buffer = 0
+                        self.ability.mult = self.ability.mult + sliced_card.sell_cost*2
+                        self:juice_up(0.8, 0.8)
+                        sliced_card:start_dissolve({HEX("7a5830")}, nil, 1.6)
+                        play_sound('slice1', 0.96+math.random()*0.08)
+                    return true end }))
                     card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
-                    local chosen_joker = ((G.jokers.cards[1]))
-                    if not chosen_joker.ability.eternal then
-                        chosen_joker.getting_sliced = true
-                        G.GAME.joker_buffer = G.GAME.joker_buffer - 1
-                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                            G.GAME.joker_buffer = 0
-                            chosen_joker:start_dissolve({HEX("7a5830")}, nil, 1.6)
-                            play_sound('slice1', 0.96+math.random()*0.08)
-                        return true end }))
-                    end
+                    return nil, true 
+                else if my_pos and G.jokers.cards[my_pos-1] and not card.getting_sliced and not G.jokers.cards[my_pos-1].ability.eternal and not G.jokers.cards[my_pos-1].getting_sliced then
+                    local sliced_card = G.jokers.cards[my_pos+1]
+                    sliced_card.getting_sliced = true
+                    G.GAME.joker_buffer = G.GAME.joker_buffer - 1
+                    G.E_MANAGER:add_event(Event({func = function()
+                        G.GAME.joker_buffer = 0
+                        self.ability.mult = self.ability.mult + sliced_card.sell_cost*2
+                        self:juice_up(0.8, 0.8)
+                        sliced_card:start_dissolve({HEX("7a5830")}, nil, 1.6)
+                        play_sound('slice1', 0.96+math.random()*0.08)
+                    return true end }))
+                    card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
+                    return nil, true 
                 end
             end
         end
+    end
     })
 
     -- Syringe

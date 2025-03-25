@@ -298,7 +298,7 @@ return {
 			["j_tma_MrSpider"] = {
 				["name"] = "Mr. Spider",
 				["text"] = {
-					"If hand is a single {C:attention}#3#{},",
+					"If first hand is a single {C:attention}#3#{},",
 					"destroy it and gain {C:white,X:mult}X#1#{} Mult,",
 					"{s:0.8}Rank changes every round",				
 					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)",
@@ -324,8 +324,8 @@ return {
 				["name"] = "Coffin",
 				["text"] = {
 					"Gives {C:money}$#1#{} when bought,",
-					"Destroys leftmost Joker",
-					"when sold"
+					"Destroys an adjacent",
+					"{C:attention}Joker{} when sold"
 				}
 			},
 			["j_tma_Syringe"] = {
