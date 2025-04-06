@@ -371,7 +371,7 @@ return {
 				["name"] = "Tape Recorder",
 				["text"] = {
 					"At end of round, gains {C:chips}Chips{}",
-					"equal to {C:attention}4X{} sell value of each",
+					"equal to {C:attention}3X{} sell value of each",
 					"{C:attention}Consumable{} in possession",
 					"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
 				}
