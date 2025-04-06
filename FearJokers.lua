@@ -32,6 +32,12 @@
         px = '34',
         py = '34'
     })
+    SMODS.current_mod.optional_features = function()
+        return {
+            post_trigger = true,
+            retrigger_joker = true
+        }
+    end
     
 
     local function forced_message(message, card, color, delay, juice)
@@ -85,7 +91,9 @@
                 if self.ability.extra.active and self.ability.name == "c_tma_glimmer" then
                     G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                     for k, v in ipairs(self.ability.extra.enhancedjokers) do
+                        if v then 
                         v:set_edition(nil, true)
+                        end
                     end
                     return true end }))
                 end
@@ -122,11 +130,9 @@
                     if wildIDS[id] then
                         wildIDS[id][#wildIDS[id]+1] = hand[i]
                         wilds = wilds + 1
-                        print("Wilds", wilds)
                     else
                         wildIDS[id] = {hand[i]}
                         wilds = wilds + 1
-                        print("Wilds", wilds)
                     end
                 else
                     if IDS[id] then
@@ -226,7 +232,7 @@
             if self.pinned then badges[#badges + 1] = 'pinned_left' end
             if self.sticker or ((self.sticker_run and self.sticker_run~='NONE') and G.SETTINGS.run_stake_stickers)  then loc_vars = loc_vars or {}; loc_vars.sticker=(self.sticker or self.sticker_run) end
     
-            return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start, main_end)
+            return generate_card_ui(self.config.center, nil, loc_vars, card_type, badges, hide_desc, main_start, main_end, self)
         else
             return local_generate_UIBox_ability_table(self)
         end
@@ -312,7 +318,7 @@
     function ease_dollars(mod, instant)
 	if G.consumeables then
         for i=1, #G.consumeables.cards do
-            if G.consumeables.cards[i].ability.name == "c_tma_paradise" and G.consumeables.cards[i].ability.extra.active and mod >=0 then
+            if G.consumeables.cards[i].ability.name == "c_tma_paradise" and G.consumeables.cards[i].ability.extra.active and mod then
                 mod = mod*2
             end
         end
@@ -813,7 +819,7 @@
             if context.selling_self and not context.blueprint then 
                 local my_pos = nil
                 for i = 1, #G.jokers.cards do
-                    if G.jokers.cards[i] == self then my_pos = i; break end
+                    if G.jokers.cards[i] == card then my_pos = i; break end
                 end
                 if my_pos and G.jokers.cards[my_pos+1] and not card.getting_sliced and not G.jokers.cards[my_pos+1].ability.eternal and not G.jokers.cards[my_pos+1].getting_sliced then 
                     local sliced_card = G.jokers.cards[my_pos+1]
@@ -821,8 +827,8 @@
                     G.GAME.joker_buffer = G.GAME.joker_buffer - 1
                     G.E_MANAGER:add_event(Event({func = function()
                         G.GAME.joker_buffer = 0
-                        self.ability.mult = self.ability.mult + sliced_card.sell_cost*2
-                        self:juice_up(0.8, 0.8)
+                        card.ability.mult = card.ability.mult + sliced_card.sell_cost*2
+                        card:juice_up(0.8, 0.8)
                         sliced_card:start_dissolve({HEX("7a5830")}, nil, 1.6)
                         play_sound('slice1', 0.96+math.random()*0.08)
                     return true end }))
@@ -834,8 +840,8 @@
                     G.GAME.joker_buffer = G.GAME.joker_buffer - 1
                     G.E_MANAGER:add_event(Event({func = function()
                         G.GAME.joker_buffer = 0
-                        self.ability.mult = self.ability.mult + sliced_card.sell_cost*2
-                        self:juice_up(0.8, 0.8)
+                        card.ability.mult = card.ability.mult + sliced_card.sell_cost*2
+                        card:juice_up(0.8, 0.8)
                         sliced_card:start_dissolve({HEX("7a5830")}, nil, 1.6)
                         play_sound('slice1', 0.96+math.random()*0.08)
                     return true end }))
@@ -870,7 +876,7 @@
 
     -- Shadow Puppet
     SMODS.Joker({
-        key = 'ShadowPuppet', atlas = 'tma_joker', pos = {x = 8, y = 1}, rarity = 3, cost = 8, blueprint_compat = true,
+        key = 'ShadowPuppet', atlas = 'tma_joker', pos = {x = 8, y = 1}, soul_pos = {x = 1, y = 3}, rarity = 3, cost = 8, blueprint_compat = true,
         config = {
             extra = {
                 active = false
@@ -993,14 +999,14 @@
             }
         end,
         calculate = function(self, card, context)
-            if context.end_of_round and not context.blueprint and not context.repetition and not context.individual then 
+            if context.end_of_round and not context.blueprint and not context.repetition and not context.individual and #G.consumeables.cards > 0 then 
                 for k, v in ipairs(G.consumeables.cards) do
-                    card.ability.extra.chips = card.ability.extra.chips + 4*v.sell_cost
+                    card.ability.extra.chips = card.ability.extra.chips + 3*v.sell_cost
                     v:juice_up()
                 end
                 card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}}}); return true
             end
-            if context.joker_main then
+            if context.joker_main and card.ability.extra.chips > 0 then
                 return {
                     message = localize{type='variable',key='a_chips',vars={card.ability.extra.chips}},
                     chips_mod = card.ability.extra.chips
@@ -1260,19 +1266,15 @@
                 for i = 1, #G.jokers.cards do
                     if G.jokers.cards[i] == card then other_joker = G.jokers.cards[i-1] end
                 end
-                if context.other_joker == other_joker then
-                    card.ability.extra.triggers = card.ability.extra.triggers + 1
+                if context.other_card == other_joker then
                     card:juice_up()
-                    return nil
+                    return {
+                        mult_mod = card.ability.extra.mult_mod,
+                        message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult_mod}, card = card},
+                        card = card,
+                        message_card = card
+                    }
                 end
-            end
-            if context.joker_main and card.ability.extra.triggers > 0 then
-                local trigs = card.ability.extra.triggers or 0
-                card.ability.extra.triggers = 0
-                return {
-                    mult_mod = card.ability.extra.mult_mod*trigs,
-                    message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult_mod*trigs}},
-                }
             end
         end
     })
@@ -2090,7 +2092,7 @@
         set = 'Statement', atlas = 'tma_tarot', key = 'divinity',
         pos = { x = 1, y = 2 },
         cost = 4,
-        config = {extra = {active = false, xmult = 1, xmult_mod = 0.5}},
+        config = {extra = {active = false, xmult = 1, xmult_mod = 1}},
         can_use = function(self, card)
             if G.STATE == G.STATES.SELECTING_HAND then
                 return not card.ability.extra.active
@@ -2123,7 +2125,7 @@
                     play_sound('tma_statement2', 1.0 + math.random()*0.1, 0.8)
                     card:start_dissolve()
                 return true end }))
-                end
+            end
             if context.end_of_round and not context.repetition and not context.individual and not card.ability.extra.active and not card.getting_sliced and not context.blueprint then
                 card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
                 return {
@@ -2131,7 +2133,7 @@
                     card = card,
                     colour = G.C.MULT
                 }
-                end
+            end
             if context.joker_main and card.ability.extra.xmult > 1 and card.ability.extra.active then
                 return {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
