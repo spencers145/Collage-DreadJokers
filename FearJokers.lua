@@ -318,8 +318,8 @@
     function ease_dollars(mod, instant)
 	if G.consumeables then
         for i=1, #G.consumeables.cards do
-            if G.consumeables.cards[i].ability.name == "c_tma_paradise" and G.consumeables.cards[i].ability.extra.active and mod then
-                mod = mod*2
+            if G.consumeables.cards[i].ability.name == "c_tma_paradise" and G.consumeables.cards[i].ability.extra.active and to_big(mod) > to_big(0) then
+                mod = to_big(mod)*2
             end
         end
 	end
