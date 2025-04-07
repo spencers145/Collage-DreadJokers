@@ -835,7 +835,7 @@
                     card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_buried_ex')})
                     return nil, true 
                 else if my_pos and G.jokers.cards[my_pos-1] and not card.getting_sliced and not G.jokers.cards[my_pos-1].ability.eternal and not G.jokers.cards[my_pos-1].getting_sliced then
-                    local sliced_card = G.jokers.cards[my_pos+1]
+                    local sliced_card = G.jokers.cards[my_pos-1]
                     sliced_card.getting_sliced = true
                     G.GAME.joker_buffer = G.GAME.joker_buffer - 1
                     G.E_MANAGER:add_event(Event({func = function()
@@ -2092,7 +2092,7 @@
         set = 'Statement', atlas = 'tma_tarot', key = 'divinity',
         pos = { x = 1, y = 2 },
         cost = 4,
-        config = {extra = {active = false, xmult = 1, xmult_mod = 1}},
+        config = {extra = {active = false, xmult = 1, xmult_mod = 1, domult = true}},
         can_use = function(self, card)
             if G.STATE == G.STATES.SELECTING_HAND then
                 return not card.ability.extra.active
@@ -2126,8 +2126,13 @@
                     card:start_dissolve()
                 return true end }))
             end
-            if context.end_of_round and not context.repetition and not context.individual and not card.ability.extra.active and not card.getting_sliced and not context.blueprint then
+            if context.setting_blind then
+                card.ability.extra.domult = true
+            end
+            if context.end_of_round and not context.repetition and not context.individual and not card.ability.extra.active and not card.getting_sliced and not context.blueprint and card.ability.extra.domult then
+                print(inspect(context))
                 card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
+                card.ability.extra.domult = false
                 return {
                     message = localize('k_upgrade_ex'),
                     card = card,
@@ -2457,7 +2462,7 @@
 	end
         if not indulgence then return GCanDiscard(e) end
         if G.GAME.current_round.discards_left <= 0 or #G.hand.highlighted <= 0 then 
-            if (to_big(G.GAME.dollars + (G.GAME.dollar_buffer or 0)) >= indulgence.ability.extra.cost) and not (#G.hand.highlighted <= 0) then
+            if (to_big(G.GAME.dollars + (G.GAME.dollar_buffer or 0)) >= to_big(indulgence.ability.extra.cost)) and not (#G.hand.highlighted <= 0) then
                 e.config.colour = G.C.MONEY
                 e.config.button = 'discard_cards_from_highlighted'
             else
