@@ -39,6 +39,14 @@
         }
     end
     
+    
+    function SMODS.signed(val)
+        if type(val) == "string" then
+            return val and ('+'..val or ''..val) or '0'
+        else
+        return val and (val > 0 and '+'..val or ''..val) or '0'
+        end
+    end
 
     local function forced_message(message, card, color, delay, juice)
         if delay == true then
@@ -1304,33 +1312,7 @@
             delay(0.6)
         end
     }
-
     
-    --[[
-    SMODS.Enhancement {
-        set = 'Enhanced', atlas = 'tma_tarot', key = 'rotting',
-        pos = {x=0,y=1},
-        config = {mult = 20, lose_mult = 5},
-        loc_vars = function(self) return {vars = {self.config.mult, self.config.lose_mult}} end,
-        calculate = function(self, card, context, effect)
-            if context.cardarea == G.play and not context.repetition then
-                SMODS.eval_this(card, {
-                    mult_mod = self.config.mult,
-                    message = localize({type = 'variable', key = 'a_mult', vars = {self.config.mult}}),
-                })
-            elseif context.discard then
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'before',
-                    delay = 0.0,
-                    func = (function()
-                        self.config.mult = self.config.mult - self.config.lose_mult
-                        return true
-                    end)}))
-                card_eval_status_text(self, 'variable', nil, nil, nil, {message = localize({key = 'a_minus_mult', type = 'variable', vars = {self.config.mult}}), colour = G.C.PURPLE})
-            end
-        end
-    }
-    ]]--
     -- Colony (Planet)
     local planet_q = function(self, card, badges)
         badges[#badges + 1] = create_badge(localize('k_planet_q'), get_type_colour(self or card.ability, card), nil, 1.2)
