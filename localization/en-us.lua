@@ -12,6 +12,8 @@ return {
 			["k_dig_ex"] = "Dig.",
 			["Chips"] = "Chips",
 			['k_tma_audio_pack'] = 'Audio Pack',
+			['k_researching'] = 'Researching...',
+			['k_tma_ready'] = 'Ready!'
 			},
 		["poker_hands"] = {
 			["dead"] = "Dead Man's Hand",
@@ -69,36 +71,42 @@ return {
 			["c_tma_nightfall"] = {
 				["name"] = "Nightfall",
 				["text"] = {
-					"When {C:attention}active{}, all played",
-					"{C:spades}Spade{} and {C:clubs}Club{} cards{} ",
-					"become {C:attention}Bonus{} cards",
-					"when scored"
+					{"When {C:attention}active{},",
+					"{C:attention}two-thirds{} of scoring",
+					"{C:spades}Spade{} and {C:clubs}Club{} cards{}",
+					"become {C:attention}Bonus{} cards"},
+					{"Sometimes, they also become",
+					"{C:dark_edition}Foil{} or {C:dark_edition}Glitter"}
 				},
 			},
 			["c_tma_burnout"] = {
 				["name"] = "Burnout",
 				["text"] = {
-					"When {C:attention}active{}, all played",
-					"{C:hearts}Heart{} and {C:diamonds}Diamond{} cards{} ",
-					"become {C:attention}Mult{} cards",
-					"when scored"
+					{"When {C:attention}active{},",
+					"{C:attention}two-thirds{} of scoring",
+					"{C:hearts}Heart{} and {C:diamonds}Diamond{} cards{}",
+					"become {C:attention}Mult{} cards"},
+					{"Rarely, they also become",
+					"{C:dark_edition}Holographic{} or {C:dark_edition}Polychrome"}
 				},
 			},
 			["c_tma_parity"] = {
 				["name"] = "Parity",
 				["text"] = {
 					"When {C:attention}active, {C:attention}odd{} cards",
-					"give {C:chips}+#1#{} Chips and",
-					"{C:attention}even{} cards give",
-					"{C:mult}+#2#{} Mult when scored."
+					"become {C:chips}Bonus{} cards and",
+					"{C:attention}even{} cards become",
+					"{T:m_mult,C:mult}Mult{} cards when scored"
 				},
 			},
 			["c_tma_wonderland"] = {
 				["name"] = "Wonderland",
 				["text"] = {
-					"When {C:attention}active{}, scoring",
-					"cards give {C:mult}Mult",
-					"equal to their rank",
+					{"When {C:attention}active{}, scoring",
+					"cards give {X:chips,C:white}X1.25{} Chips"},
+					{"Scoring cards gain",
+					"permanent chips equal",
+					"to their {C:attention}rank{}"},
 				},
 			},
 			["c_tma_precipice"] = {
@@ -120,71 +128,98 @@ return {
 			["c_tma_research"] = {
 				["name"] = "Research",
 				["text"] = {
-					"When {C:attention}active{},",
-					"retriggers all scoring",
-					"{C:attention}numbered{} cards"
+					{"Must be held for",
+					"{C:attention}#1# more round(s){} before",
+					"it may be activated"},
+					{"When {C:attention}active{},",
+					"add a {C:dark_edition,E:1}permanent retrigger{}",
+					"to a random {C:attention}scored card{}"},
+				},
+			},
+			["c_tma_research_ready"] = {
+				["name"] = "Research",
+				["text"] = {
+					{"When {C:attention}active{},",
+					"add a {C:dark_edition,E:1}permanent retrigger{}",
+					"to a random {C:attention}scored card{}"},
 				},
 			},
 			["c_tma_preserve"] = {
 				["name"] = "Preserve",
 				["text"] = {
-					"When {C:attention}active{}, all cards",
-					"cannot be {C:attention}debuffed{}"
+					{"When {C:attention}active{}, all cards",
+					"cannot be {C:attention}debuffed{}"},
+					{"{C:green}#1# in #2#{} chance to {C:attention}copy{}",
+					"one scored card each hand",
+					"{C:inactive,s:0.8}(Fails to copy cards in {C:attention,s:0.8}Linked groups{}{C:inactive,s:0.8})"}
 				},
 			},
 			["c_tma_morph"] = {
 				["name"] = "Morph",
 				["text"] = {
-					"When {C:attention}active{}, {C:attention}Wild{}",
-					"cards are considered",
-					"as all {C:attention}ranks{}"
+					"When {C:attention}active{},",
+					"{C:attention}half{} of scored cards",
+					"become {C:attention}Wild{} cards",
 				},
 			},
 			["c_tma_paradise"] = {
 				["name"] = "Halcyon",
 				["text"] = {
-					"When {C:attention}active{}, doubles",
-					"all {C:money}Dollars{} gained"
+					{"When {C:attention}active{},",
+					"apply {C:dark_edition}Fluorescent Edition{} to",
+					"a {C:attention}third{} of scored cards"}
 				},
 			},
 			["c_tma_divinity"] = {
 				["name"] = "Divinity",
 				["text"] = {
-					"When {C:attention}active{}, {C:white,X:mult}X#1#{} Mult",
-					"for each round this card",
-					"was held in {C:attention}possession",
-					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"
+					{"Must be held for",
+					"{C:attention}#1# full round{} before",
+					"it may be activated"},
+					{"When {C:attention}active{}, {C:white,X:mult}X#2#{} Mult"},
+				},
+			},
+			["c_tma_divinity_ready"] = {
+				["name"] = "Divinity",
+				["text"] = {
+					{"When {C:attention}active{}, {C:white,X:mult}X#2#{} Mult"},
 				},
 			},
 			["c_tma_indulgence"] = {
 				["name"] = "Indulgence",
 				["text"] = {
-					"When {C:attention}active{}, spend {C:money}$#1#",
-					"to {C:red}discard{} hand if",
-					"no discards remaining"
+					"When {C:attention}active{},",
+					"a {C:attention}third{} of discarded cards",
+					"become {C:attention}Cracker Cards{}"
 				},
 			},
 			["c_tma_glimmer"] = {
 				["name"] = "Glimmer",
 				["text"] = {
-					"When {C:attention}active{}, all {C:attention}Jokers",
-					"gain a random {C:attention}Edition",
-					"this Blind."
+					{"When {C:attention}active{}, all {C:attention}Jokers",
+					"gain a random {C:dark_edition}Edition{}",
+					"this blind"},
+					{"If sold while {C:attention}active{},",
+					"a random {C:attention}Joker{}",
+					"keeps its {C:dark_edition}Edition{}"}
 				},
 			},
 			["c_tma_static"] = {
 				["name"] = "Static",
 				["text"] = {
-					"When {C:attention}active{}, all scoring",
+					{"When {C:attention}active{}, all scoring",
 					"cards return to {C:attention}hand{}",
-					"after being played."
+					"after being played"},
+					{"{C:attention}Half{} of unenhanced,",
+					"scored cards become",
+					"{C:attention}Steel{}, {C:attention}Gold{}, or {C:attention}Wood{}"}
 				},
 			},
 			["c_tma_exhaustion"] = {
 				["name"] = "Exhaustion",
 				["text"] = {
-					"When {C:attention}active{}, destroys",
-					"all cards in {C:attention}Scoring Hand",
+					"When {C:attention}active{}, destroy",
+					"{C:attention}two-thirds{} of {C:attention}scoring cards",
 				},
 			},
 		},
@@ -203,16 +238,18 @@ return {
 				["name"] = "Dig.",
 				["text"] = {
 					"Reduces {C:attention}Blind Requirement{}",
-					"by {C:white,X:chips}#1#%{} for every {C:spades}Spade{}",
-					"Card scored this round"
+					"by {C:white,X:chips}#1#%{} each time a",
+					"{C:spades}Spade{} card scores"
 				},
 			},
 			["j_tma_PlagueDoctor"] = {
 				["name"] = "Plague Doctor",
 				["text"] = {
-					"{C:purple}Rots{} all {C:attention}Consumable{} cards",
-					"in your possession at ",
-					"the end of the {C:attention}shop"
+					{"{C:purple,E:1}Rots{} all held {C:attention}consumables{} at",
+					"the end of each {C:attention}shop"},
+					{"Gains {C:white,X:mult}X#1#{} Mult for",
+					"each card converted",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult)"}
 				},
 			},
 			["j_tma_BlindSun"] = {
@@ -317,23 +354,25 @@ return {
 				["text"] = {
 					"{C:attention}+#1#{} hand size,",
 					"Discard {C:attention}#2#{} random cards",
-					"when hand is played"
+					"when hand is played",
+					"(Fails to discard {C:attention}Cracker Cards{})"
 				}
 			},
 			["j_tma_Coffin"] = {
 				["name"] = "Coffin",
 				["text"] = {
-					"Gives {C:money}$#1#{} when bought,",
-					"Destroys an adjacent",
-					"{C:attention}Joker{} when sold"
+					{"{C:white,X:mult}X#1#{} Mult for each",
+					"held consumable card",
+					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive})"},
+					{"Consumables cannot",
+					"be used"}
 				}
 			},
 			["j_tma_Syringe"] = {
 				["name"] = "Syringe",
 				["text"] = {
-					"{C:attention}Sell{} this card to set",
-					"{C:blue}hands{} to 1 and reduce",
-					"{C:attention}Blind Requirement{} by {X:chips,C:white}80%{}"
+					"{C:attention}Sell{} this card to",
+					"{C:purple,E:1}rot{} all held consumables"
 				}
 			},
 			["j_tma_ShadowPuppet"] = {
@@ -370,17 +409,17 @@ return {
 			["j_tma_Archivist"] = {
 				["name"] = "Tape Recorder",
 				["text"] = {
-					"At end of round, gains {C:chips}Chips{}",
-					"equal to {C:attention}3X{} sell value of each",
-					"{C:attention}Consumable{} in possession",
-					"{C:inactive}(Currently {C:chips}+#1#{C:inactive} Chips)"
+					"At end of round, gains {C:mult}Mult{}",
+					"equal to the total sell value of",
+					"all owned {C:attention}Consumables{}",
+					"{C:inactive}(Currently {C:mult}+#1#{C:inactive} Mult)"
 				}
 			},
 			["j_tma_Heartbeat"] = {
 				["name"] = "Pulse",
 				["text"] = {
 					"{C:attention}Retriggers{} all",
-					"played {C:heart}Heart{} cards",
+					"played {C:hearts}Heart{} cards",
 					"when scored"
 				}
 			},
