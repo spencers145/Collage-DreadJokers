@@ -836,11 +836,9 @@
     })
 
     -- Coffin
-    --[[SMODS.Joker({
-        key = 'Coffin', discovered = false, atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 3, cost = 6, blueprint_compat = false, eternal_compat = false,
-        config = {
-            xmult_per = 1,
-        },
+    SMODS.Joker({
+        key = 'Coffin', discovered = false, atlas = 'tma_joker', pos = {x = 6, y = 1}, rarity = 1, cost = 6, blueprint_compat = false, eternal_compat = false,
+        config = {},
         loc_vars = function(self,info_queue,card)
             info_queue[#info_queue+1] = { key = "c_collagexdread_rotten", set = "Other" }
         end,
@@ -850,7 +848,7 @@
         calculate = function(self,card,context)
             
         end
-    })]]
+    })
 
     --Shadow Puppet
     SMODS.Joker({
@@ -2538,9 +2536,74 @@
           end,
         }))
       end
+      -- ###############################################################################################################################################
+      -- ###############################################################################################################################################
+      -- ###############################################################################################################################################
+      -- ###############################################################################################################################################
+      -- #################################### Can_rot_card function added. Remember to add consumables here too with new rottens! ######################
+      -- G.FUNCS.rot_card as well, it's just an extension of the sell function. Still add it tho!! Also, new
+    G.FUNCS.can_rot_card = function(e)
+          e.config.colour = G.C.PURPLE
+          e.config.button = "rot_card"
+          local consumable_card = e.config.ref_table
+          if (consumable_card.config.center.key == "c_tma_the_rot" or consumable_card.config.center.key == "c_tma_colony" or consumable_card.config.center.key == "c_tma_decay" or consumable_card.config.center.key == "c_collagexdread_slay_the_princess" or consumable_card.config.center.key == "c_collagexdread_art_bleach" or consumable_card.config.center.key == "c_collagexdread_interference" or consumable_card.config.center.key == "c_collagexdread_buffer") or
+          ((2*to_big(consumable_card.sell_cost) > to_big(G.GAME.dollars) - to_big(G.GAME.bankrupt_at)) and (2*consumable_card.sell_cost > 0)) then
+            e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+            e.config.button = nil 
+          end
+      end
+      G.FUNCS.rot_card = function(e)
+        local source_card = SMODS.find_card("j_tma_Coffin")[next(SMODS.find_card("j_tma_Coffin"))]
+        local consumable_card = e.config.ref_table
+        ease_dollars(-2*to_big(consumable_card.sell_cost))
+        rot_card(consumable_card, source_card)
+        return true
+      end
     
       local G_UIDEF_use_and_sell_buttons_ref = G.UIDEF.use_and_sell_buttons
       function G.UIDEF.use_and_sell_buttons(card)
+        -- ###############################################################################################################################################
+        -- Everything from here to the next comment is new!!! add it in the use_and_sell_buttons function!
+        if (card.area and card.area == G.consumeables) and next(SMODS.find_card("j_tma_Coffin")) and card.ability.consumeable then
+            local sell = nil
+            local use = nil
+            sell = {n=G.UIT.C, config={align = "cr"}, nodes={
+            {n=G.UIT.C, config={ref_table = card, align = "cr",padding = 0.1, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'sell_card', func = 'can_rot_card'}, nodes={
+                {n=G.UIT.B, config = {w=0.1,h=0.6}},
+                {n=G.UIT.C, config={align = "tm"}, nodes={
+                {n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
+                    {n=G.UIT.T, config={text = localize('b_rot'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+                }},
+                {n=G.UIT.R, config={align = "cm"}, nodes={
+                    {n=G.UIT.T, config={text = localize('$'),colour = G.C.WHITE, scale = 0.4, shadow = true}},
+                    {n=G.UIT.T, config={ref_table = card, ref_value = 'sell_cost_label',colour = G.C.WHITE, scale = 0.55, shadow = true}}
+                }}
+                }}
+            }},
+            }}
+            use = 
+            {n=G.UIT.C, config={align = "cr"}, nodes={
+            
+            {n=G.UIT.C, config={ref_table = card, align = "cr",maxw = 1.25, padding = 0.1, r=0.08, minw = 1.25, minh = (card.area and card.area.config.type == 'joker') and 0 or 1, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'use_card', func = 'can_use_consumeable'}, nodes={
+                {n=G.UIT.B, config = {w=0.1,h=0.6}},
+                {n=G.UIT.T, config={text = localize('b_use'),colour = G.C.UI.TEXT_LIGHT, scale = 0.55, shadow = true}}
+            }}
+            }}
+            local t = {
+            n=G.UIT.ROOT, config = {padding = 0, colour = G.C.CLEAR}, nodes={
+                {n=G.UIT.C, config={padding = 0.15, align = 'cl'}, nodes={
+                {n=G.UIT.R, config={align = 'cl'}, nodes={
+                    sell
+                }},
+                {n=G.UIT.R, config={align = 'cl'}, nodes={
+                    use
+                }},
+                }},
+            }}
+        return t
+        end
+        -- end of comment!
+      -- ###############################################################################################################################################
         if (card.area == G.pack_cards and G.pack_cards) and card.ability.consumeable then --Add a use button
           if card.ability.set == "Statement" or card.ability.name == "c_tma_compulsion" or card.ability.name == "Blank" then
             return {
@@ -2582,7 +2645,6 @@
         end
         return G_UIDEF_use_and_sell_buttons_ref(card)
       end
-
     local GCanDiscard = G.FUNCS.can_discard
     G.FUNCS.can_discard = function(e)
         local indulgence = nil

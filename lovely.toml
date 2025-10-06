@@ -44,58 +44,6 @@ end
 
 '''
 
-# Idol Fix
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = '''context.other_card:get_id() == G.GAME.current_round.idol_card.id'''
-match_indent = true
-position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.idol_card.id or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.idol_card.id == 11 or G.GAME.current_round.idol_card.id == 12 or G.GAME.current_round.idol_card.id == 13) ))'''
-
-# Mail Fix
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = '''context.other_card:get_id() == G.GAME.current_round.mail_card.id'''
-match_indent = true
-position = 'at'
-payload = '''(context.other_card:get_id() == G.GAME.current_round.mail_card.id  or ((context.other_card:get_id() == 11 or context.other_card:get_id() == 12 or context.other_card:get_id() == 13) and next(find_joker('j_tma_Boneturner')) and (G.GAME.current_round.mail_card.id == 11 or G.GAME.current_round.mail_card.id == 12 or G.GAME.current_round.mail_card.id == 13) ))'''
-
-# Wildfire
-[[patches]]
-[patches.pattern]
-target = 'functions/state_events.lua'
-pattern = '''if scoring_hand[i].ability.name == 'Glass Card' and not scoring_hand[i].debuff and pseudorandom('glass') < G.GAME.probabilities.normal/scoring_hand[i].ability.extra then'''
-position = 'before'
-match_indent = true
-payload = '''
-if scoring_hand[i].ability.name == 'Wild Card' and not scoring_hand[i].debuff and next(SMODS.find_card('j_tma_Wildfire')) then
-    for _, v in ipairs(G.jokers.cards) do
-        if v.config.center.key == 'j_tma_Wildfire' and not v.debuff then
-            if (pseudorandom('wildfire'..G.SEED) < G.GAME.probabilities.normal / v.ability.extra.odds) then
-                local wildcard = scoring_hand[i]
-                if scoring_hand[i+1] then
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function()
-                    local card = scoring_hand[i+1]
-                    copy_card(scoring_hand[i], card)
-                    card:juice_up()
-                return true end }))
-                end
-            elseif (pseudorandom('wildfire'..G.SEED) < G.GAME.probabilities.normal / v.ability.extra.odds) then
-                local wildcard = scoring_hand[i]
-                if scoring_hand[i-1] then
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function()
-                    local card = scoring_hand[i-1]
-                    copy_card(scoring_hand[i], card)
-                    card:juice_up()
-                return true end }))
-                end
-            end
-        end
-    end
-end'''
-
 # Lighthhouse
 [[patches]]
 [patches.pattern]
@@ -108,24 +56,6 @@ if next(SMODS.find_card('j_tma_Lighthouse')) and self.ability.effect ~= "Base" t
     self.debuff = false
     return
 end
-'''
-
-# Preserve
-[[patches]]
-[patches.pattern]
-target = 'card.lua'
-pattern = '''if self.ability.perishable and self.ability.perish_tally <= 0 then'''
-match_indent = true
-position = 'before'
-payload = '''
-    if G.consumeables then
-    for i=1, #G.consumeables.cards do
-        if G.consumeables.cards[i].ability.name == "c_tma_preserve" and G.consumeables.cards[i].ability.extra.active then
-            self.debuff = false
-            return
-        end
-    end
-    end
 '''
 
 # static draw from play to discard
@@ -184,6 +114,21 @@ if G.consumeables ~= nil then
             break
         end
     end
+end
+
+'''
+
+# Card:set_cost() This is new too!! add it to the end of the lovely file
+[[patches]]
+[patches.pattern]
+target = 'card.lua'
+pattern = "self.sell_cost_label = self.facing == 'back' and '?' or self.sell_cost"
+position = 'after'
+match_indent = true
+payload = '''
+
+if next(SMODS.find_card("j_tma_Coffin")) and self.ability.consumeable then
+    self.sell_cost_label = self.facing == 'back' and '?' or self.sell_cost*2
 end
 
 '''

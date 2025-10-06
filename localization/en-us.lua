@@ -9,6 +9,7 @@ return {
 			["k_end_ex"] = "Click!",
 			["k_mult"] = "Mult!",
 			["b_take"] = "TAKE",
+			["b_rot"] = "ROT",
 			["k_dig_ex"] = "Dig.",
 			["Chips"] = "Chips",
 			['k_tma_audio_pack'] = 'Audio Pack',
@@ -361,11 +362,9 @@ return {
 			["j_tma_Coffin"] = {
 				["name"] = "Coffin",
 				["text"] = {
-					{"{C:white,X:mult}X#1#{} Mult for each",
-					"held consumable card",
-					"{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive})"},
-					{"Consumables cannot",
-					"be used"}
+					{"Pay double the {C:attention}Sell Value{}",
+					"to {C:purple,E:1}rot consumable cards",
+					"instead of selling them"}
 				}
 			},
 			["j_tma_Syringe"] = {
