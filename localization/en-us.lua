@@ -36,8 +36,10 @@ return {
 			["c_tma_the_rot"] = {
 				["name"] = "The Rot",
 				["text"] = {
-					"Creates {C:attention}1{} random",
-					"{C:dark_edition}Negative {C:tarot}Tarot{} card"
+					{"Select up to {C:attention}3{} cards"},
+					{"Convert {C:paperback_dark_suit}dark suits",
+					"into {C:bunc_halberds}Halberds{} and",
+					"{C:paperback_light_suit}light suits{} into {C:bunc_fleurons}Fleurons"}
 				},
 			}
 		},
@@ -45,9 +47,8 @@ return {
 			["c_tma_decay"] = {
 				["name"] = "Decay",
 				["text"] = {
-					"Create a {C:dark_edition}Negative",
-					"{C:attention} perishable{} copy",
-					"of a random {C:attention}Joker"
+					"{C:red}+2{} discards",
+					"{C:attention}-1{} hand size"
 				},
 			},
 			["c_tma_compulsion"] = {

@@ -1165,22 +1165,40 @@
         config = {tarots = 1}, hidden = true,
         discovered = false,
         can_use = function(self, card)
-            return true
+            if #G.hand.highlighted > 0 and #G.hand.highlighted <= 3 then
+                for key, other_card in pairs(G.hand.highlighted) do
+                    if SMODS.has_no_suit(other_card) then
+                        return false
+                    end
+                end
+                return true
+            end
+            return false
         end,
         in_pool = function(self)
             return false
         end,
         loc_vars = function(self) return {vars = {self.config.tarots}} end, cost_mult = 1.0, effect = "Round Bonus",
         use = function(self, card, area,copier)
-            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                    play_sound('timpani')
-                    local new_card = create_card('Tarot', G.consumeables, nil, nil, nil, nil, nil, 'rot')
-                    new_card:set_edition({negative = true}, true)
-                    new_card:add_to_deck()
-                    new_card:set_cost(1)
-                    G.consumeables:emplace(new_card)
-                    card:juice_up(0.3, 0.5)
-                return true end }))
+            for i, value in ipairs(G.hand.highlighted) do
+                local percent = 1.15 - (i-0.999)/(#G.hand.highlighted-0.998)*0.3
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() value:flip();play_sound('card1', percent);value:juice_up(0.3, 0.3);return true end }))
+            end
+            G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.6, func = function()
+                for _, value in pairs(G.hand.highlighted) do
+                    if SMODS.has_enhancement(value, 'm_wild') then
+
+                    elseif PB_UTIL.is_suit(value, 'dark') then
+                        value:change_suit('bunc_Halberds')
+                    elseif PB_UTIL.is_suit(value, 'light') then
+                        value:change_suit('bunc_Fleurons')
+                    end
+                end
+            return true end }))
+            for i, value in ipairs(G.hand.highlighted) do
+                local percent = 0.85 + (i-0.999)/(#G.hand.highlighted-0.998)*0.3
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() value:flip();play_sound('tarot2', percent, 0.6);value:juice_up(0.3, 0.3);return true end }))
+            end
             delay(0.6)
         end
     }
@@ -1239,29 +1257,22 @@
         pos = { x = 2, y = 0 }, hidden = true,
         discovered = false,
         can_use = function(self, card)
-            for k, v in pairs(G.jokers.cards) do
-                if v.ability.set == 'Joker' and G.jokers.config.card_limit > 1 then 
-                    return true
-                end
-            end
+            return true
         end,
         in_pool = function(self)
             return false
         end,
         use = function(self, card, area, copier)
-            local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('decay_choice'))
-            G.E_MANAGER:add_event(Event({trigger = 'before', delay = 0.4, func = function()
-                local new_card = copy_card(chosen_joker, nil, nil, nil, chosen_joker.edition and chosen_joker.edition.negative)
-                new_card:start_materialize()
-                new_card:add_to_deck()
-                local new_edition = {negative = true}
-                new_card:set_edition(new_edition, true)
-                if new_card.ability.eternal then
-                    SMODS.Stickers['eternal']:apply(new_card, false)
+            G.E_MANAGER:add_event(Event({
+                trigger = 'before',
+                delay = 0.4,
+                func = function()
+                    G.GAME.round_resets.discards = G.GAME.round_resets.discards + 2
+                    ease_discard(2)
+                    G.hand:change_size(-1)
+                    return true
                 end
-                SMODS.Stickers['perishable']:apply(new_card, true, 5)
-                G.jokers:emplace(new_card)
-                return true end }))
+            }))
         end,
     }
 
